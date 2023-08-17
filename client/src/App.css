@@ -10,7 +10,7 @@
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
-  width: 320px;
+  width: 500px;
   max-width: 90%;
   border-style:solid;
   border-color: rgb(68, 194, 87);;
@@ -21,8 +21,6 @@
   
 }
 .cart-link {
-  color: green;
-  font-weight: bold;
   display: flex;
   align-items: center;
 }

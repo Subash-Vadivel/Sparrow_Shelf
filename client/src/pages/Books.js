@@ -8,21 +8,23 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Header from '../components/Header';
 import Popup from "reactjs-popup"
-import { useAuth } from '../utils/Authentication';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { cartData } from '../redux/actions';
+import { logout, cartData } from '../redux/actions';
 
 
 export default function Books() {
+
   const [data, setData] = useState(null);
   const [isOpen, setOpen] = useState(false);
   const [start, setStart] = useState(0);
   const [item, setItem] = useState(0);
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
-  const auth = useAuth();
 
+
+  const user  = useSelector(state => state.auth.user);
+  const details  = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -34,12 +36,10 @@ export default function Books() {
   const load = async () => {
     try {
       const result = await axiosPrivate.get(`/books/page/${start}`);
-      console.log(result.data);
       setData(result.data);
     }
     catch (err) {
       console.log(err);
-
     }
   }
   useEffect(() => {
@@ -49,17 +49,22 @@ export default function Books() {
   const addToCart=async(e,price,id)=>{
     e.preventDefault();
     try{
+
+      if(user){
        const result=await axiosPrivate.post("/addtocart",{item:{
-        book_id:id,user_id:auth.details.id,price:price},uid:auth.details.id
+        book_id:id,user_id:details.id,price:price},uid:details.id
        })
-       
-       if(result.data.status)
-       {
-           dispatch(cartData())
-          alert("Item Added")
+       if(result.data.status){
+           dispatch(cartData(details.id))
+           alert("Item Added")
        }
         else
            alert("Item Already in Cart")
+      }
+      else
+      {
+        alert("Please Login First");
+      }
     }
     catch(err)
     {
@@ -72,7 +77,7 @@ export default function Books() {
     e.preventDefault();
     try {
       await axiosPrivate.post("/order", {
-        book_id: order.id, user_id: auth.details.id, amount: qty * order.price, quantity: qty
+        book_id: order.id, user_id: details.id, amount: qty * order.price, quantity: qty
       })
       setOrder(false);
       setOpen(false);
@@ -82,7 +87,7 @@ export default function Books() {
     catch (err) {
       if(err.response.data.statusCode===401)
       {
-        auth.logout();
+        await dispatch(logout()); navigate('/')
       }
       console.log(err);
     }
@@ -173,10 +178,10 @@ export default function Books() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '10px' }}>
                     <Button variant="success" onClick={(e)=>addToCart(e,item.price,item.id)}>Add to Cart</Button>
                     <Button variant="success" onClick={() => {
-                      if (auth.user && item.stock<=0) {
+                      if (user && item.stock<=0) {
                         alert("Sorry Out Of Stock")
                       }
-                      else if(auth.user)
+                      else if(user)
                       {
                         setItem(prev => item.id); setOpen(true);
 

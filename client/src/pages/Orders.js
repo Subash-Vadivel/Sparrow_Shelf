@@ -6,10 +6,8 @@ import Col from 'react-bootstrap/Col';
 import axiosPrivate from '../utils/axiosPrivate';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
-import { useAuth } from '../utils/Authentication';
+
 import { useNavigate } from "react-router-dom"
-
-
 import { useSelector, useDispatch } from 'react-redux';
 
 export default function Orders() {
@@ -18,12 +16,15 @@ export default function Orders() {
   const [data, setData] = useState([])
   const [start,setStart]=useState(0);
   const navigate = useNavigate();
-  const auth = useAuth();
   const load = async () => {
     try {
       console.log(userDetails);
+      console.log(user);
+      if(userDetails)
+      {
       const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
       setData(result.data);
+      }
     }
     catch (err) {
       console.log(err);
@@ -38,7 +39,6 @@ export default function Orders() {
     try {
       await axiosPrivate.delete(`/cancel-order/${id}`);
       load();
-
     }
     catch (err) {
       console.log(err);
@@ -52,8 +52,12 @@ export default function Orders() {
       navigate('/');
       return;
     }
+
     load();
   }, [])
+  useEffect(()=>{
+   load();
+  },[userDetails]);
   return (
     <>
       <Header />
@@ -78,15 +82,10 @@ export default function Orders() {
                       </div>
                     </Card.Body>
                   </Card>
-
-
-
-
                 </Col>)
               })
             }</>
           }
-
         </Row>
         <Row>
             <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}

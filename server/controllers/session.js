@@ -20,13 +20,12 @@ const login = async(Request, Reply) => {
         token:token
       })
       await redis.set(token,hasOne.id);
-
       Request.cookieAuth.set({ user_id: hasOne.id,token:token });
       return Reply(hasOne.dataValues).code(200)
 
     }
     else
-      return Reply("Invalid Credentials").code(409);
+      return Reply("failed").code(409);
   }
   catch (err) {
     console.log(err);
@@ -38,12 +37,12 @@ const logout = async(Request, Reply) => {
   try {
     const data=Request.state['ag-47'];
 
-    const r=await models.session.findOne({where:{
+    const result=await models.session.findOne({where:{
       user_id:data.user_id,
       token:data.token
     }})
-    if(r)
-       await r.destroy();
+    if(result)
+       await result.destroy();
     await redis.del(data.token);
     Request.cookieAuth.clear();
     

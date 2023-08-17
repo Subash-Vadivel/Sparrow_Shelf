@@ -10,7 +10,7 @@ const userReducer = (state = initialState, action) => {
       console.log("Hitted")
       localStorage.setItem('user', action.data.email);
       localStorage.setItem('details', JSON.stringify(action.data));
-      return {details:action.data.details,user:action.data.email}
+      return {details:action.data,user:action.data.email}
     case 'LOGOUT':
       localStorage.removeItem('user')
       localStorage.removeItem('details')

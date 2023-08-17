@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
-import { useAuth } from '../utils/Authentication';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -8,8 +7,6 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import axiosPrivate from '../utils/axiosPrivate';
-
-
 
 import { useSelector, useDispatch } from 'react-redux';
 import { cartData } from '../redux/actions';
@@ -19,36 +16,30 @@ import { cartData } from '../redux/actions';
 export default function Cart() {
 
   const navigate = useNavigate();
-
   const user  = useSelector(state => state.auth.user);
+  const details  = useSelector(state => state.auth.details);
   const data  = useSelector(state => state.content.allCarts);
   const dispatch = useDispatch();
 
-
-  
   const handleRemove=async(e,cid)=>{
     e.preventDefault();
     try{
         await axiosPrivate.delete(`/removecart/${cid}`)
-        dispatch(cartData())
+        await dispatch(cartData(details.id))
     }
-    catch(err)
-    {
+    catch(err){
       console.log(err);
     }
   }
-  useEffect(() => {
-    if (!user) {
 
+  useEffect(async() => {
+    if (!user) {
       alert("Plz Login");
-      navigate('/');
-      return;
-    
+      navigate('/'); 
     }
     else
     {
-      if(data.length===0)
-          dispatch(cartData());
+          await dispatch(cartData(details.id));
     }
   }, [])
   return (
@@ -60,7 +51,7 @@ export default function Cart() {
         {data.map((item,idx)=>{
           console.log(item);
           return (
-            <Col key={idx}>
+            <Col style={{ marginBottom: '50px' }} key={idx}>
             <Card style={{ width: '18rem', height: '275px' }}>
               <Card.Body>
                 <Card.Title >{item.book.book_name}</Card.Title>
@@ -79,9 +70,7 @@ export default function Cart() {
                   }}>-</Button>
                   <span style={{ margin: '0 10px' }}>{item.quantity}</span>
                   <Button variant="outline-success" onClick={(e) => {
-                    e.preventDefault();
-
-                    
+                    e.preventDefault();          
                   }}>+</Button>
                 </div>
                 <div>

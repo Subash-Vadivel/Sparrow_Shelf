@@ -3,7 +3,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from './pages/Home';
 import Books from './pages/Books';
-import Authentication from './utils/Authentication';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import { Provider } from 'react-redux'; // Import the Provider component
@@ -13,7 +12,6 @@ function App() {
     <>
       <BrowserRouter>
         <Provider store={store}>
-          <Authentication>
             <Routes>
               <Route path="/" element={<Home />}>
               </Route>
@@ -21,7 +19,6 @@ function App() {
               <Route path="/cart" element={<Cart />}></Route>
               <Route path="/order" element={<Orders />}></Route>
             </Routes>
-          </Authentication>
         </Provider>
       </BrowserRouter>
 

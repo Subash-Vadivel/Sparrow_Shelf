@@ -46,12 +46,6 @@ const bookByParams=async(Request,Reply)=>{
   try
   {
        const page= parseInt(Request.params.page);
-       console.log(page);
-       const cacheValue=await redis.get(`page#${page}`);
-       if(cacheValue)
-       {
-        
-       }
        const result =await models.books.findAll({
         where:{
           id:{[models.Sequelize.Op.between]:[page*12+1,(page*12)+12]}

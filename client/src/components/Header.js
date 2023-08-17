@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -10,28 +9,29 @@ import Navbar from 'react-bootstrap/Navbar';
 import axiosPrivate from '../utils/axiosPrivate';
 import { useEffect, useState } from 'react';
 import logo from "../../assets/logo.png"
-import { useAuth } from '../utils/Authentication';
 import Popup from "reactjs-popup"
 import { useNavigate } from 'react-router-dom';
-
+import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
 
 function Header(props) {
+  const[error,setError]=useState('');
   const [book, setBook] = useState(null);
   const [isOpen, setOpen] = useState(false);
   const [isLogin, setLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const location = useLocation();
+  const currentPath = location.pathname;
   const user = useSelector(state => state.auth.user);
+  const details = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
   const data = useSelector(state => state.content.allCarts);
-
-const navigate=useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
-    if (user) {
-      dispatch(cartData());
+    if (user && details) {
+      dispatch(cartData(details.id));
 
     }
   }, [])
@@ -39,18 +39,16 @@ const navigate=useNavigate();
   const search = async (e) => {
     e.preventDefault();
     try {
-      if(book)
-      {
-      const result = await axiosPrivate.get(`/books?book=${book}`);
-      console.log(book)
-      props.setData(result.data);
+      if (book) {
+        const result = await axiosPrivate.get(`/books?book=${book}`);
+        console.log(book)
+        props.setData(result.data);
       }
-      else
-      {
+      else {
 
-      const result = await axiosPrivate.get(`/books/page/0`);
-      console.log(book)
-      props.setData(result.data);
+        const result = await axiosPrivate.get(`/books/page/0`);
+        console.log(book)
+        props.setData(result.data);
       }
     }
     catch (err) {
@@ -60,16 +58,31 @@ const navigate=useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      if(!email || !password)
+      {
+        setError("Missing Data");
+        return;
+      }
+      else if(password.length<8)
+      {
+        setError("Invalid Password")
+        return;
+      }
+      console.log("Started ---> ")
       const result = await axiosPrivate.post("/login", { email, password });
-      dispatch({ type: 'LOGIN', data: result.data })
+      console.log(result.data);
+      await dispatch(cartData(result.data.id));
+      await dispatch({ type: 'LOGIN', data: result.data })
       setEmail('');
       setPassword('');
-      dispatch(cartData());
+      setError('');
+      console.log("<--- Completed")
       setOpen(false);
     }
     catch (err) {
-      console.log(err);
-      alert("error")
+      if(err.response.status===409){
+         setError("Invalid Credential")
+      };
     }
   }
 
@@ -86,21 +99,21 @@ const navigate=useNavigate();
   return (
     <><Popup
       open={isOpen}
-      onClose={() => setOpen(false)}
+      onClose={() => {setOpen(false);setError('');setEmail('');setPassword('')}}
       position="center"
       className='login-popup'
     >
       <Container fluid className='login-template'>
-
         {isLogin ? <Form className='popup-form'>
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
             <Form.Label column sm={2} md={4}>
               Email
             </Form.Label>
-            <Col sm={10} md={8}>
-              <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+            <Col sm={10} md={8}> 
+              <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"  />
             </Col>
           </Form.Group>
+
 
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
             <Form.Label column sm={2} md={4}>
@@ -109,13 +122,13 @@ const navigate=useNavigate();
             <Col sm={10} md={8}>
               <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
             </Col>
+            <p style={{color:"red",textAlign:'center'}}>{error}</p>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalCheck" >
             <Col className="d-flex justify-content-end">
               <Form.Check className='checkbox' label="Remember me" />
             </Col>
           </Form.Group>
-
           <Form.Group as={Row} className="mb-3 justify-content-center">
             <Col className="text-center">
               <Button type="submit" variant='success' onClick={handleLogin}>Log in</Button>
@@ -177,17 +190,20 @@ const navigate=useNavigate();
                 style={{ maxHeight: '100px' }}
                 navbarScroll
               >
-                <Nav.Link  onClick={()=>navigate("/")}>Home</Nav.Link>
-                <Nav.Link  onClick={()=>navigate("/book")}>Books</Nav.Link>
-                <Nav.Link  onClick={()=>navigate("/order")}>Orders</Nav.Link>
+                <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
+                <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link>
 
                 {user ?
-                  <Nav.Link  onClick={()=>navigate("/cart")} className='cart-link'>Cart<span className="cart-count">{data.length}</span></Nav.Link> : <></>}
+                  <> <Nav.Link onClick={() => navigate("/order")}>Orders</Nav.Link>
+                    <Nav.Link onClick={() => navigate("/cart")} className='cart-link'>Cart<span className="cart-count">{data.length}</span></Nav.Link>
+                  </>
+                  : <></>}
 
               </Nav>
 
               <Nav className="justify-content-end my-2 my-lg-3">
 
+               { currentPath==='/book'?
                 <Form className="d-flex">
                   <Form.Control
                     type="search"
@@ -198,15 +214,20 @@ const navigate=useNavigate();
                   />
                   <div className="d-flex gap-2">
                     <Button variant="outline-success" onClick={search}>Search</Button>
-                    {user ?
-                      <Button variant="danger" onClick={(e) => { e.preventDefault(); dispatch(logout()); }}>Logout</Button> :
-                      <Button variant="outline-success" onClick={() => {
-                        setOpen(true);
-                        console.log(isOpen)
-                      }}>Login</Button>
-                    }
+
                   </div>
-                </Form>
+                </Form>:<></>}
+
+                <div style={{ marginLeft: '5px' }}>
+                  {user ?
+                    <Button variant="danger" onClick={(e) => { e.preventDefault(); dispatch(logout()); navigate('/') }}>Logout</Button> :
+                    <Button variant="success" onClick={() => {
+                      setOpen(true);
+                      console.log(isOpen)
+                    }}>Login</Button>
+                  }
+
+                </div>
 
               </Nav>
             </Navbar.Collapse>
