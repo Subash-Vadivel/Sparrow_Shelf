@@ -49,6 +49,7 @@ const orderByUID=async(Request,Reply)=>{
       }]
 
     }) 
+    console.log(result);
     Reply(result[0].orders);
      
   }

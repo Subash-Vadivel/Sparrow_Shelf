@@ -1,6 +1,7 @@
 const models = require("sequelizer")
 const {v4 :uuid}=require("uuid")
 const bcrypt=require("bcrypt")
+const redis=require('redisConnection');
 
 const login = async(Request, Reply) => {
   try {
@@ -18,7 +19,8 @@ const login = async(Request, Reply) => {
         user_id:hasOne.id,
         token:token
       })
-      
+      await redis.set(token,hasOne.id);
+
       Request.cookieAuth.set({ user_id: hasOne.id,token:token });
       return Reply(hasOne.dataValues).code(200)
 
@@ -35,13 +37,14 @@ const login = async(Request, Reply) => {
 const logout = async(Request, Reply) => {
   try {
     const data=Request.state['ag-47'];
+
     const r=await models.session.findOne({where:{
       user_id:data.user_id,
       token:data.token
     }})
     if(r)
        await r.destroy();
-
+    await redis.del(data.token);
     Request.cookieAuth.clear();
     
 

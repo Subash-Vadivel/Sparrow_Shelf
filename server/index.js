@@ -4,7 +4,7 @@ const Hapi = require("hapi")
 const route = require("route")
 const models = require("sequelizer");
 const configStrategy = require("configStrategy");
-
+const redis=require('redisConnection');
 
 
 
@@ -63,7 +63,7 @@ async function registerRoute() {
     }
     server.route(flatRoutes)
 
-    
+
     server.views({
       engines: {
         ejs: require('ejs')

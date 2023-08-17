@@ -37,3 +37,41 @@
   vertical-align: super; 
 }
 
+.footLi{  
+  color:white;
+  font-size: large;
+  margin-right: 30px;
+  margin-left: 60px;
+}
+.footLi>li{  
+ margin-top: 10px;
+}
+
+.footLi>li:hover{  
+  color:yellow;
+  cursor: pointer;
+}
+.footerMain{
+  
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color:rgb(25,183,133);
+  /* background: linear-gradient(90deg, rgba(92,27,156,1) 0%, rgba(131,59,197,1) 56%, rgba(125,90,229,1) 100%, rgba(12,132,156,1) 100%); */
+}
+.footerEnd{
+  text-align: center;
+  background-color: white;
+}
+
+.footerEndTxt{
+  font-weight: 600; 
+  padding-top: 10px;   
+}
+.footerTop{
+   text-align: center;
+}
+.footerTopItem>img{
+  padding-top: 10px;
+  padding-bottom: 10px;
+    width: 200px;
+}

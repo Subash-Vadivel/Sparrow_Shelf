@@ -21,11 +21,12 @@ export default function Orders() {
   const auth = useAuth();
   const load = async () => {
     try {
-      
+      console.log(userDetails);
       const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
       setData(result.data);
     }
     catch (err) {
+      console.log(err);
       alert("Internal Error");
     }
   }

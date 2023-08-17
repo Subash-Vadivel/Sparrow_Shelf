@@ -25,10 +25,15 @@ export default function Books() {
 
   const dispatch = useDispatch();
 
+  useEffect(()=>{
+    load();
+  },[start])
+
+
 
   const load = async () => {
     try {
-      const result = await axiosPrivate.get("/books");
+      const result = await axiosPrivate.get(`/books/page/${start}`);
       console.log(result.data);
       setData(result.data);
     }
@@ -151,7 +156,7 @@ export default function Books() {
 
         <Container >
           <Row>
-            {data.slice(start, start + 16).map((item, index) => {
+            {data.map((item, index) => {
               return (<Col style={{ marginBottom: '50px' }} key={index}>
                 <Card style={{ width: '18rem', height: '275px' }} >
                   <Card.Body>
@@ -192,7 +197,7 @@ export default function Books() {
           <Row>
             <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
             </Col>
-            <Col>         {data.length > start * 12 + 12 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+            <Col>         {data.length > 11 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
             </Col>
           </Row>
         </Container>

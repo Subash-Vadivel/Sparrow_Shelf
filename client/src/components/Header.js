@@ -39,9 +39,19 @@ const navigate=useNavigate();
   const search = async (e) => {
     e.preventDefault();
     try {
+      if(book)
+      {
       const result = await axiosPrivate.get(`/books?book=${book}`);
       console.log(book)
       props.setData(result.data);
+      }
+      else
+      {
+
+      const result = await axiosPrivate.get(`/books/page/0`);
+      console.log(book)
+      props.setData(result.data);
+      }
     }
     catch (err) {
       console.log(err);

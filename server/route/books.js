@@ -14,6 +14,13 @@ const route=[{
   config:{
     handler:handler.books.bookByID
   }
+},
+{
+  method:"GET",
+  path:"/books/page/{page}",
+  config:{
+    handler:handler.books.bookByParams
+  }
 }
 ]
 

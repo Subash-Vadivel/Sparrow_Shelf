@@ -13,7 +13,6 @@ const showCart=async(Request,Reply)=>{
         include:[{model:models.books}]
       }]
      });
-     console.log(result);
      Reply(result).code(200);
   }
   catch(err)
