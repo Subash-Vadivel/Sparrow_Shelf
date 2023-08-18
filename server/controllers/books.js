@@ -63,4 +63,60 @@ const bookByParams=async(Request,Reply)=>{
 
 }
 
-module.exports = { allBooks, bookByID ,bookByParams}
+const deleteBookById=async(Request,Reply)=>{
+  try
+  {
+    console.log(Request.payload);
+    const { ids } = Request.payload; 
+    if (!ids || !Array.isArray(ids)) {
+      return Reply('Invalid IDs').code(400);
+    }
+    await models.books.destroy({
+      where: {
+        id: ids
+      }
+    });
+
+       Reply("Done").code(200);
+  }
+  catch(err)
+  {
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+
+}
+
+const updateBook=async(Request,Reply)=>{
+  try{
+        const id=Request.params.id;
+        const {data}=Request.payload;
+        const result= await models.books.update(data, {
+          where: {
+            id: id
+          }
+        });
+        Reply("ok").code(200)
+  }
+  catch(err)
+  {
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+}
+
+const addBook=async(Request,Reply)=>{
+  try{
+      const data=Request.payload;
+      console.log(data);
+       const result=await models.books.create(data);
+       console.log(result);
+       Reply("ok").code(201);
+  }
+  catch(err){
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+}
+
+module.exports = { allBooks, bookByID ,bookByParams,deleteBookById,updateBook,addBook}

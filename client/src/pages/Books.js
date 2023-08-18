@@ -11,6 +11,7 @@ import Popup from "reactjs-popup"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
+import { redirect } from 'react-router-dom';
 
 
 export default function Books() {
@@ -22,10 +23,11 @@ export default function Books() {
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
 
-
+  
   const user  = useSelector(state => state.auth.user);
   const details  = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
+
 
   useEffect(()=>{
     load();
@@ -43,6 +45,9 @@ export default function Books() {
     }
   }
   useEffect(() => {
+  
+
+
     load();
   }, [])
 

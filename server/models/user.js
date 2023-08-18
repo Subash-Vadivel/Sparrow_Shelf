@@ -17,6 +17,11 @@ module.exports=(sequelize,DataTypes)=>{
     type:DataTypes.INTEGER,
     autoIncrement:true,
     primaryKey:true
+  },
+  isadmin:{
+    type:DataTypes.BOOLEAN,
+    allowNull:false,
+    defaultValue:false
   }
  },{
   index:[{

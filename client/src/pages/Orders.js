@@ -77,8 +77,22 @@ export default function Orders() {
                         Status : {item.status}
                       </Card.Text>
                       <div>
+                        {
+                           item.status==="Delivered"?<>
+                           <Button variant="success" style={{ float: 'left' }} >Return</Button>
+                           <Button variant="success" style={{ float: 'right' }}> Review</Button>
+                           </>:
+                          <>
+                          {item.status==="Rejected" ||item.status==="Cancelled" ?<>
+                          <Button variant="danger" style={{ float: 'right' }}> Support</Button>
+
+                          </>:
+                          <>
                         <Button variant="success" style={{ float: 'left' }} onClick={(e) => cancelOrder(e, item.id)}>Cancel</Button>
                         <Button variant="success" style={{ float: 'right' }}> Track</Button>
+                        </> }
+                        </>
+                      } 
                       </div>
                     </Card.Body>
                   </Card>

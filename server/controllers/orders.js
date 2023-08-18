@@ -94,4 +94,34 @@ const cancelOrderById=async(Request,Reply)=>{
   }
 }
 
-module.exports={placeOrder,orderByUID,cancelOrderById}
+const allOrders=async(Request,Reply)=>{
+  try{
+    const result=await models.orders.findAll({});
+    Reply(result).code(200);
+
+  }
+  catch(err){
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+}
+
+const updateOrder=async(Request,Reply)=>{
+  try{
+    const data=Request.payload.data;
+    const id=Request.params.id;
+    const result=await models.orders.update(data,{
+      where: {
+        id: id
+      }
+    });
+    Reply("ok").code(200);
+
+  }
+  catch(err){
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+}
+
+module.exports={placeOrder,orderByUID,cancelOrderById,allOrders,updateOrder}

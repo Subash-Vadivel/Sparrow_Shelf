@@ -10,7 +10,7 @@ const login = async(Request, Reply) => {
       where: {
         email: email
       },
-      attributes:['email','user_name','password','id']
+      attributes:['email','user_name','password','id','isadmin']
     })
     const result=await bcrypt.compare(password,hasOne.dataValues.password);
     if(result) {

@@ -76,6 +76,8 @@ function Header(props) {
       setEmail('');
       setPassword('');
       setError('');
+      if(result.data.isadmin)
+         navigate('/admin');
       console.log("<--- Completed")
       setOpen(false);
     }
@@ -190,14 +192,28 @@ function Header(props) {
                 style={{ maxHeight: '100px' }}
                 navbarScroll
               >
+
+                {!user?
+                <>                
                 <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
                 <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link>
+                </>
+                : 
+                (!details.isadmin?<>
+                  <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
+                  <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link></>:
+                <>
+                <Nav.Link onClick={() => navigate("/admin")}>Dashboard</Nav.Link>
+                <Nav.Link onClick={() => navigate("/admin/inventory")}>Inventory</Nav.Link>
+                <Nav.Link onClick={() => navigate("/admin/view-order")}>View Orders</Nav.Link>
 
-                {user ?
+                </>
+                  )}
+     
+                {user && !details.isadmin &&
                   <> <Nav.Link onClick={() => navigate("/order")}>Orders</Nav.Link>
                     <Nav.Link onClick={() => navigate("/cart")} className='cart-link'>Cart<span className="cart-count">{data.length}</span></Nav.Link>
-                  </>
-                  : <></>}
+                  </>}
 
               </Nav>
 

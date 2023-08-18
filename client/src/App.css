@@ -73,3 +73,15 @@
   padding-bottom: 10px;
     width: 200px;
 }
+
+.heading{
+  margin-bottom: 20px;
+}
+
+.floatRightBtn{
+  float: right;
+  margin-right: 5px;
+}
+.topspace{
+  margin-top: 10px;
+}

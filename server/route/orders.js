@@ -34,6 +34,20 @@ const route=[{
     },
     handler:handler.orders.cancelOrderById
   }
+},
+{
+  method:"GET",
+  path:"/orders/all",
+  config:{
+    handler:handler.orders.allOrders
+  }
+},
+{
+  method:"PUT",
+  path:"/updateorder/{id}",
+  config:{
+    handler:handler.orders.updateOrder
+  }
 }
 ]
 
