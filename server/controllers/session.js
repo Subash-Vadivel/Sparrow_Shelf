@@ -2,7 +2,8 @@ const models = require("sequelizer")
 const {v4 :uuid}=require("uuid")
 const bcrypt=require("bcrypt")
 const redis=require('redisConnection');
-
+const {addTask}=require('bullQueue');
+const { heavyTask } = require("../bullQueue");
 const login = async(Request, Reply) => {
   try {
     const {email,password}=Request.payload;
@@ -12,6 +13,11 @@ const login = async(Request, Reply) => {
       },
       attributes:['email','user_name','password','id','isadmin']
     })
+    if(!hasOne)
+    {
+      return Reply("failed").code(409);
+
+    }
     const result=await bcrypt.compare(password,hasOne.dataValues.password);
     if(result) {
       const token=uuid();
@@ -64,12 +70,16 @@ const signup = async (Request, Reply) => {
       where: {
         email
       },
-      
-
     })
     if (hasOne)
       return Reply("Already Exist").code(400)
-    const result = await models.user.create({email,password:hashPassword});
+    // for(var i=0;i<10000000000;i++)
+    // {
+
+    // }
+    // heavyTask();
+    // const result = await models.user.create({email,password:hashPassword});
+    addTask({email});
     return Reply("Created").code(201);
 
   }

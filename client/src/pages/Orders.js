@@ -80,7 +80,7 @@ export default function Orders() {
                         {
                            item.status==="Delivered"?<>
                            <Button variant="success" style={{ float: 'left' }} >Return</Button>
-                           <Button variant="success" style={{ float: 'right' }}> Review</Button>
+                           <Button variant="success" style={{ float: 'right' }} href='https://sprw.io/stt-h2XdNbpJzECBYMQisWCQqe'> Review</Button>
                            </>:
                           <>
                           {item.status==="Rejected" ||item.status==="Cancelled" ?<>
@@ -112,3 +112,4 @@ export default function Orders() {
     </>
   )
 }
+
