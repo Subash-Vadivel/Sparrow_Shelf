@@ -1,5 +1,5 @@
 const strategy = require("strategies")
-const models = require("models/sequelizer");
+const models = require("models");
 const redis = require('utils/redisConnection');
 
 module.exports = (server) => {

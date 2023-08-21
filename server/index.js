@@ -1,7 +1,7 @@
 require('app-module-path').addPath('./server/');
 const Hapi = require("hapi")
 const route = require("route")
-const models = require("models/sequelizer");
+const models = require("models");
 const configStrategy = require("utils/configStrategy");
 async function syncModels() {
   try {

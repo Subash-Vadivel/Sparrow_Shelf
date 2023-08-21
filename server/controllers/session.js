@@ -1,4 +1,4 @@
-const models = require("models/sequelizer")
+const models = require("models")
 const { v4: uuid } = require("uuid")
 const bcrypt = require("bcrypt")
 const redis = require('utils/redisConnection');

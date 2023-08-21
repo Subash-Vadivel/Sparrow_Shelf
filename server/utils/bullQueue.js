@@ -1,6 +1,6 @@
 const Bull = require('bull');
 const nodemailer = require('nodemailer');
-const models = require('models/sequelizer');
+const models = require('models');
 
 const Queue = new Bull('Mailer');
 const cleanUp = new Bull('Update');

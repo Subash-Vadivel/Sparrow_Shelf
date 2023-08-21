@@ -1,4 +1,4 @@
-import './App.css';
+import './css/App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from './pages/Home';
@@ -9,11 +9,8 @@ import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Shipping from './pages/Shipping';
 import LoginRequired from './components/LoginRequired';
-import User from './components/User';
-import AccessRequired from './components/AccessRequired';
 import Admin from './components/Admin';
 import PageNotFound from './components/PageNotFound';
-import Unauthrized from './components/Unauthrized';
 import { useSelector, useDispatch } from 'react-redux';
 
 

@@ -9,10 +9,12 @@ const sequelize = new Sequelize('sparrow', 'postgres', '1818', {
 
 const models = {}
 
-const modelsDir = path.join(__dirname, 'models');
+const modelsDir = path.join(__dirname, '.');
 fs.readdirSync(modelsDir).forEach(file => {
-  const model = require(path.join(modelsDir, file))(sequelize, Sequelize.DataTypes);
-  models[model.name] = model;
+  if(file!=="index.js"){
+    const model = require(path.join(modelsDir, file))(sequelize, Sequelize.DataTypes);
+    models[model.name] = model;
+  }
 });
 
 // Association

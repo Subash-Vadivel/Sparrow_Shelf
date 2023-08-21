@@ -1,4 +1,4 @@
-const models = require("models/sequelizer");
+const models = require("models");
 exports.strategy =
 {
   scheme: (server, option) => {

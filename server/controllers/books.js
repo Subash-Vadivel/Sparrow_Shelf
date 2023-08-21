@@ -1,4 +1,4 @@
-const models = require("models/sequelizer");
+const models = require("models");
 const redis = require('utils/redisConnection');
 
 const allBooks = async (Request, Reply) => {
