@@ -1,13 +1,8 @@
 require('app-module-path').addPath('./server/');
-
 const Hapi = require("hapi")
 const route = require("route")
 const models = require("sequelizer");
 const configStrategy = require("configStrategy");
-const redis=require('redisConnection');
-
-
-
 async function syncModels() {
   try {
     await models.sequelize.sync();
@@ -17,12 +12,8 @@ async function syncModels() {
     console.log(err);
   }
 }
-
 syncModels();
-
-
 async function registerRoute() {
-
   try {
     const server = new Hapi.Server();
     server.connection({
@@ -50,7 +41,7 @@ async function registerRoute() {
 
 
     configStrategy(server);
-   
+     
 
     const flatRoutes = [];
     for (const key in route) {
