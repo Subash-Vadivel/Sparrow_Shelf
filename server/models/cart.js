@@ -1,40 +1,40 @@
 
-module.exports=(sequelize,DataTypes)=>{
-  const Cart=sequelize.define('cart',{
-    id:{ 
-      type:DataTypes.INTEGER,
-      primaryKey:true,
-      autoIncrement:true
+module.exports = (sequelize, DataTypes) => {
+  const Cart = sequelize.define('cart', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
     },
-    book_id:{
-      type:DataTypes.INTEGER,
-      allowNull:false
+    book_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
-    user_id:{
-      type:DataTypes.INTEGER,
-      allowNull:false
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
-    quantity:{
-      type:DataTypes.INTEGER,
-      allowNull:false,
-      defaultValue:1
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
     },
-    price:{
-      type:DataTypes.INTEGER,
-      allowNull:false
+    price: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
-  },{
-    index:[{
-      field:['user_id'],
-      name:'byUser'
+  }, {
+    index: [{
+      field: ['user_id'],
+      name: 'byUser'
     }]
   });
-  Cart.associate=models=>{
-   Cart.belongsTo(models.books,{
-    foreignKey:{
-      name:"book_id"
-    }
-   }) 
+  Cart.associate = models => {
+    Cart.belongsTo(models.books, {
+      foreignKey: {
+        name: "book_id"
+      }
+    })
   }
   return Cart;
 }

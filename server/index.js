@@ -26,22 +26,22 @@ async function registerRoute() {
 
       },
     })
-    server.ext('onPreHandler',(Request,Reply)=>{
+    server.ext('onPreHandler', (Request, Reply) => {
       console.log("-------------------------- On Request ----------------------------")
-      console.log(" Path : "+Request.path);
+      console.log(" Path : " + Request.path);
       return Reply.continue();
 
     })
-    server.ext('onPostHandler',(Request,Reply)=>{
+    server.ext('onPostHandler', (Request, Reply) => {
       console.log("-------------------------- Request Completed ----------------------");
       return Reply.continue();
     })
-    
-    await server.register([require('hapi-auth-cookie'),require('inert'),require('vision')])
+
+    await server.register([require('hapi-auth-cookie'), require('inert'), require('vision')])
 
 
     configStrategy(server);
-     
+
 
     const flatRoutes = [];
     for (const key in route) {

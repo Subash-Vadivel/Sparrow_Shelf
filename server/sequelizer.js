@@ -1,13 +1,13 @@
-const Sequelize=require("sequelize");
-const path=require("path");
-const fs=require("fs");
+const Sequelize = require("sequelize");
+const path = require("path");
+const fs = require("fs");
 
-const sequelize=new Sequelize('sparrow','postgres','1818',{
-  host:'localhost',
-  dialect:'postgres'
+const sequelize = new Sequelize('sparrow', 'postgres', '1818', {
+  host: 'localhost',
+  dialect: 'postgres'
 });
 
-const models={}
+const models = {}
 
 const modelsDir = path.join(__dirname, 'models');
 fs.readdirSync(modelsDir).forEach(file => {
@@ -17,9 +17,8 @@ fs.readdirSync(modelsDir).forEach(file => {
 
 // Association
 
-Object.keys(models).forEach((modelName)=>{
-  if(models[modelName].associate)
-  {
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
     models[modelName].associate(models);
   }
 })

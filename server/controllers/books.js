@@ -1,5 +1,5 @@
 const models = require("sequelizer");
-const redis=require('redisConnection');
+const redis = require('redisConnection');
 
 const allBooks = async (Request, Reply) => {
   try {
@@ -27,7 +27,7 @@ const allBooks = async (Request, Reply) => {
 
 const bookByID = async (Request, Reply) => {
   try {
-    const id =parseInt( Request.params.id);
+    const id = parseInt(Request.params.id);
     console.log(id);
     const result = await models.books.findOne({
       where: {
@@ -42,32 +42,29 @@ const bookByID = async (Request, Reply) => {
   }
 }
 
-const bookByParams=async(Request,Reply)=>{
-  try
-  {
-       const page= parseInt(Request.params.page);
-       const result =await models.books.findAll({
-        where:{
-          id:{[models.Sequelize.Op.between]:[page*12+1,(page*12)+12]}
-        }, attributes: ['id', 'price', 'stock', 'book_name']
-       })
-      //  console.log(result);
+const bookByParams = async (Request, Reply) => {
+  try {
+    const page = parseInt(Request.params.page);
+    const result = await models.books.findAll({
+      where: {
+        id: { [models.Sequelize.Op.between]: [page * 12 + 1, (page * 12) + 12] }
+      }, attributes: ['id', 'price', 'stock', 'book_name']
+    })
+    //  console.log(result);
 
-       Reply(result).code(200);
+    Reply(result).code(200);
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
     Reply("Internal Error").code(500);
   }
 
 }
 
-const deleteBookById=async(Request,Reply)=>{
-  try
-  {
+const deleteBookById = async (Request, Reply) => {
+  try {
     console.log(Request.payload);
-    const { ids } = Request.payload; 
+    const { ids } = Request.payload;
     if (!ids || !Array.isArray(ids)) {
       return Reply('Invalid IDs').code(400);
     }
@@ -77,46 +74,44 @@ const deleteBookById=async(Request,Reply)=>{
       }
     });
 
-       Reply("Done").code(200);
+    Reply("Done").code(200);
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
     Reply("Internal Error").code(500);
   }
 
 }
 
-const updateBook=async(Request,Reply)=>{
-  try{
-        const id=Request.params.id;
-        const {data}=Request.payload;
-        const result= await models.books.update(data, {
-          where: {
-            id: id
-          }
-        });
-        Reply("ok").code(200)
+const updateBook = async (Request, Reply) => {
+  try {
+    const id = Request.params.id;
+    const { data } = Request.payload;
+    const result = await models.books.update(data, {
+      where: {
+        id: id
+      }
+    });
+    Reply("ok").code(200)
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
     Reply("Internal Error").code(500);
   }
 }
 
-const addBook=async(Request,Reply)=>{
-  try{
-      const data=Request.payload;
-      console.log(data);
-       const result=await models.books.create(data);
-       console.log(result);
-       Reply("ok").code(201);
+const addBook = async (Request, Reply) => {
+  try {
+    const data = Request.payload;
+    console.log(data);
+    const result = await models.books.create(data);
+    console.log(result);
+    Reply("ok").code(201);
   }
-  catch(err){
+  catch (err) {
     console.log(err);
     Reply("Internal Error").code(500);
   }
 }
 
-module.exports = { allBooks, bookByID ,bookByParams,deleteBookById,updateBook,addBook}
+module.exports = { allBooks, bookByID, bookByParams, deleteBookById, updateBook, addBook }

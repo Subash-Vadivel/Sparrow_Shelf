@@ -1,6 +1,6 @@
 const Bull = require('bull');
 const nodemailer = require('nodemailer');
-const models=require('sequelizer');
+const models = require('sequelizer');
 
 const Queue = new Bull('Mailer');
 const cleanUp = new Bull('Update');
@@ -8,10 +8,9 @@ const cleanUp = new Bull('Update');
 
 const options = {
   attempts: 2,
-  // repeat: { cron: '* * * * *' }
 };
 
-const addTask=(data)=>{
+const addTask = (data) => {
   Queue.add(data, options);
 
 }
@@ -35,60 +34,58 @@ function sendMail(email) {
       if (err) {
         reject(err);
       } else {
-        console.log("Mail Delivered To : "+email);
+        console.log("Mail Delivered To : " + email);
         resolve(info);
       }
     });
   });
 }
 
-function update(){
-  return new Promise(async(resolve,reject)=>{
-    try{
-        await models.books.update({stock:10},{
-          where:{
-            stock:0
-          }
-        });
-        resolve();
-
+function update() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await models.books.update({ stock: 10 }, {
+        where: {
+          stock: 0
+        }
+      });
+      resolve();
     }
-    catch(err)
-    {
+    catch (err) {
       reject();
     }
-    
+
   })
 }
 
-const heavyTask=()=>{
-  cleanUp.add({name:"suabsh"},{
-    repeat: { cron: '*/15 * * * *' }, 
+const heavyTask = () => {
+  cleanUp.add({ name: "suabsh" }, {
+    repeat: { cron: '*/15 * * * *' },
   });
 }
-cleanUp.process(async(job)=>{
+cleanUp.process(async (job) => {
   console.log("Crons : ");
   return await update();
 })
-cleanUp.on('completed',(job)=>{
+cleanUp.on('completed', (job) => {
   console.log("Cron Update");
 
 })
 
 
 
-Queue.process(async (job) => { 
+Queue.process(async (job) => {
   console.log("Processing : ");
-  return await sendMail(job.data.email); 
+  return await sendMail(job.data.email);
 });
 
-Queue.on('completed',(job)=>{
+Queue.on('completed', (job) => {
   console.log("Job Completed")
 })
 
 
 
-module.exports={addTask,heavyTask}
+module.exports = { addTask, heavyTask }
 
 
 

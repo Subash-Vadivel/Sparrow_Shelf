@@ -1,32 +1,31 @@
 const models = require("sequelizer")
-const {v4 :uuid}=require("uuid")
-const bcrypt=require("bcrypt")
-const redis=require('redisConnection');
-const {addTask}=require('bullQueue');
+const { v4: uuid } = require("uuid")
+const bcrypt = require("bcrypt")
+const redis = require('redisConnection');
+const { addTask } = require('bullQueue');
 const { heavyTask } = require("../bullQueue");
-const login = async(Request, Reply) => {
+const login = async (Request, Reply) => {
   try {
-    const {email,password}=Request.payload;
+    const { email, password } = Request.payload;
     const hasOne = await models.user.findOne({
       where: {
         email: email
       },
-      attributes:['email','user_name','password','id','isadmin']
+      attributes: ['email', 'user_name', 'password', 'id', 'isadmin']
     })
-    if(!hasOne)
-    {
+    if (!hasOne) {
       return Reply("failed").code(409);
 
     }
-    const result=await bcrypt.compare(password,hasOne.dataValues.password);
-    if(result) {
-      const token=uuid();
-      const r=await models.session.create({
-        user_id:hasOne.id,
-        token:token
+    const result = await bcrypt.compare(password, hasOne.dataValues.password);
+    if (result) {
+      const token = uuid();
+      const r = await models.session.create({
+        user_id: hasOne.id,
+        token: token
       })
-      await redis.set(token,hasOne.id);
-      Request.cookieAuth.set({ user_id: hasOne.id,token:token });
+      await redis.set(token, hasOne.id);
+      Request.cookieAuth.set({ user_id: hasOne.id, token: token });
       return Reply(hasOne.dataValues).code(200)
 
     }
@@ -39,19 +38,21 @@ const login = async(Request, Reply) => {
   }
 }
 
-const logout = async(Request, Reply) => {
+const logout = async (Request, Reply) => {
   try {
-    const data=Request.state['ag-47'];
+    const data = Request.state['ag-47'];
 
-    const result=await models.session.findOne({where:{
-      user_id:data.user_id,
-      token:data.token
-    }})
-    if(result)
-       await result.destroy();
+    const result = await models.session.findOne({
+      where: {
+        user_id: data.user_id,
+        token: data.token
+      }
+    })
+    if (result)
+      await result.destroy();
     await redis.del(data.token);
     Request.cookieAuth.clear();
-    
+
 
     Reply("Logged out")
   }
@@ -64,8 +65,8 @@ const logout = async(Request, Reply) => {
 const signup = async (Request, Reply) => {
   try {
 
-    const {email,password}=Request.payload;
-    const hashPassword=await bcrypt.hash(password,8)
+    const { email, password } = Request.payload;
+    const hashPassword = await bcrypt.hash(password, 8)
     const hasOne = await models.user.findOne({
       where: {
         email
@@ -78,8 +79,8 @@ const signup = async (Request, Reply) => {
 
     // }
     // heavyTask();
-    // const result = await models.user.create({email,password:hashPassword});
-    addTask({email});
+    const result = await models.user.create({email,password:hashPassword});
+    addTask({ email });
     return Reply("Created").code(201);
 
   }
