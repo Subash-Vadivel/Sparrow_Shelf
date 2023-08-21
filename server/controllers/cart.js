@@ -1,4 +1,4 @@
-const models = require("sequelizer")
+const models = require("models/sequelizer")
 const showCart = async (Request, Reply) => {
   try {
     const uid = Request.params.uid;

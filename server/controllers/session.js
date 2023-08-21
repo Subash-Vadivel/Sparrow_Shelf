@@ -1,9 +1,8 @@
-const models = require("sequelizer")
+const models = require("models/sequelizer")
 const { v4: uuid } = require("uuid")
 const bcrypt = require("bcrypt")
-const redis = require('redisConnection');
-const { addTask } = require('bullQueue');
-const { heavyTask } = require("../bullQueue");
+const redis = require('utils/redisConnection');
+const { heavyTask,addTask } = require("utils/bullQueue");
 const login = async (Request, Reply) => {
   try {
     const { email, password } = Request.payload;

@@ -1,6 +1,6 @@
 const strategy = require("strategies")
-const models = require("sequelizer");
-const redis = require('redisConnection');
+const models = require("models/sequelizer");
+const redis = require('utils/redisConnection');
 
 module.exports = (server) => {
   //   server.auth.scheme('sessionScheme', strategy.session.strategy.scheme);

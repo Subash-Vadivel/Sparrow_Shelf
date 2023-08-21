@@ -1,4 +1,4 @@
-const models = require("sequelizer");
+const models = require("models/sequelizer");
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {
