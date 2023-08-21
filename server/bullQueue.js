@@ -1,9 +1,9 @@
 const Bull = require('bull');
 const nodemailer = require('nodemailer');
-
+const models=require('sequelizer');
 
 const Queue = new Bull('Mailer');
-const CPUQueue = new Bull('Intensive');
+const cleanUp = new Bull('Update');
 
 
 const options = {
@@ -42,25 +42,38 @@ function sendMail(email) {
   });
 }
 
-function cpuIntense(){
-  return new Promise((resolve,reject)=>{
-    for(var i=0;i<10000000000;i++)
-    {
+function update(){
+  return new Promise(async(resolve,reject)=>{
+    try{
+        await models.books.update({stock:10},{
+          where:{
+            stock:0
+          }
+        });
+        resolve();
 
     }
-    console.log("Completed")
-    resolve();
+    catch(err)
+    {
+      reject();
+    }
+    
   })
 }
 
 const heavyTask=()=>{
-  CPUQueue.add({name:"suabsh"});
+  cleanUp.add({name:"suabsh"},{
+    repeat: { cron: '*/15 * * * *' }, 
+  });
 }
-CPUQueue.process(async(job)=>{
-  console.log("CPU Intense Operation : ");
-  return await cpuIntense();
+cleanUp.process(async(job)=>{
+  console.log("Crons : ");
+  return await update();
 })
+cleanUp.on('completed',(job)=>{
+  console.log("Cron Update");
 
+})
 
 
 
@@ -72,6 +85,8 @@ Queue.process(async (job) => {
 Queue.on('completed',(job)=>{
   console.log("Job Completed")
 })
+
+
 
 module.exports={addTask,heavyTask}
 

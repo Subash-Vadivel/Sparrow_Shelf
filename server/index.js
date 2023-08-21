@@ -8,7 +8,6 @@ const redis=require('redisConnection');
 
 
 
-
 async function syncModels() {
   try {
     await models.sequelize.sync();
@@ -42,7 +41,6 @@ async function registerRoute() {
       return Reply.continue();
 
     })
-
     server.ext('onPostHandler',(Request,Reply)=>{
       console.log("-------------------------- Request Completed ----------------------");
       return Reply.continue();
@@ -82,9 +80,7 @@ async function registerRoute() {
 
   } catch (err) {
     console.log("------------------------------------------------------------------")
-
     console.log(err);
-
     console.log("------------------------------------------------------------------")
 
   }
