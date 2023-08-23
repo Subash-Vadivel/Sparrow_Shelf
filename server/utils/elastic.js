@@ -140,7 +140,7 @@ async function searchBook(searchString){
       }
     });
     const data=response.hits.hits.map((item)=>{
-      return {id:+item._id,book_name:item._source.book_name,stock:item._source.stock,price:item._source.price}
+      return item._id
     })
     return data;
   }
