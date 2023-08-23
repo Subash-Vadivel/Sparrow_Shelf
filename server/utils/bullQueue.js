@@ -1,7 +1,9 @@
 const Bull = require('bull');
 const nodemailer = require('nodemailer');
 const models = require('models');
+const elastic=require('utils/elastic')
 
+const updateBook=new Bull('Book_Update');
 const Queue = new Bull('Mailer');
 const cleanUp = new Bull('Update');
 
@@ -85,7 +87,20 @@ Queue.on('completed', (job) => {
 
 
 
-module.exports = { addTask, heavyTask }
+const addUpdateBook=(data)=>{
+       updateBook.add(data,options)
+}
+updateBook.process(async(job)=>{
+  return await elastic.updateBook(job.data.content,job.data.id);
+
+})
+updateBook.on('completed',(job)=>{
+  console.log("Job Completed");
+})
+
+
+
+module.exports = { addTask, heavyTask ,addUpdateBook}
 
 
 

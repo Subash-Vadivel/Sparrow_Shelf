@@ -21,7 +21,6 @@ function App() {
     <>
       <BrowserRouter>
             <Routes>
-
               <Route path="/" element={<Home />}>
               </Route>
                { (!details  || details.isadmin===false) && 

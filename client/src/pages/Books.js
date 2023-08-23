@@ -11,7 +11,7 @@ import Popup from "reactjs-popup"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
-import { redirect } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 
 export default function Books() {
@@ -23,21 +23,22 @@ export default function Books() {
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
 
-  
+  const navigate=useNavigate();
   const user  = useSelector(state => state.auth.user);
   const details  = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
 
-
-  useEffect(()=>{
-    load();
-  },[start])
+    //  For Pagination Concept
+  // useEffect(()=>{
+  //   load();
+  // },[start])
 
 
 
   const load = async () => {
     try {
-      const result = await axiosPrivate.get(`/books/page/${start}`);
+      // const result = await axiosPrivate.get(`/books/page/${start}`);
+      const result=await axiosPrivate.get("/books");
       setData(result.data);
     }
     catch (err) {
@@ -45,9 +46,6 @@ export default function Books() {
     }
   }
   useEffect(() => {
-  
-
-
     load();
   }, [])
 
@@ -166,7 +164,7 @@ export default function Books() {
 
         <Container >
           <Row>
-            {data.map((item, index) => {
+            {data.slice(start*12,start*12+12).map((item, index) => {
               return (<Col style={{ marginBottom: '50px' }} key={index}>
                 <Card style={{ width: '18rem', height: '275px' }} >
                   <Card.Body>
@@ -204,10 +202,18 @@ export default function Books() {
 
 
           </Row>
-          <Row>
+          {/* For Pagination by Page Number */}
+          {/* <Row>
             <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
             </Col>
             <Col>         {data.length > 0 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+            </Col>
+          </Row> */}
+
+            <Row>
+            <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+            </Col>
+            <Col>         {data.length > start*12 + 12 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
             </Col>
           </Row>
         </Container>

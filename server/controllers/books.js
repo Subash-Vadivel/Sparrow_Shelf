@@ -1,16 +1,19 @@
 const models = require("models");
 const redis = require('utils/redisConnection');
-
+const elastic=require('utils/elastic')
+const {addUpdateBook}=require('utils/bullQueue')
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
+    console.log(book);
     if (book) {
 
-      const books = await models.books.findAll({
-        where: {
-          book_name: { [models.Sequelize.Op.like]: `${book}%` }
-        }, attributes: ['id', 'price', 'stock', 'book_name']
-      });
+      // const books = await models.books.findAll({
+      //   where: {
+      //     book_name: { [models.Sequelize.Op.like]: `${book}%` }
+      //   }, attributes: ['id', 'price', 'stock', 'book_name']
+      // });
+      const books= await elastic.searchBook(book);
       Reply(books);
     }
     else {
@@ -87,11 +90,14 @@ const updateBook = async (Request, Reply) => {
   try {
     const id = Request.params.id;
     const { data } = Request.payload;
-    const result = await models.books.update(data, {
+    console.log(data);
+    await models.books.update(data, {
       where: {
         id: id
       }
     });
+    // await elastic.updateBook(data,id);
+     addUpdateBook({content:data,id})
     Reply("ok").code(200)
   }
   catch (err) {

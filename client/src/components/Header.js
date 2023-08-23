@@ -46,7 +46,7 @@ function Header(props) {
       }
       else {
 
-        const result = await axiosPrivate.get(`/books/page/0`);
+        const result = await axiosPrivate.get("/books");
         console.log(book)
         props.setData(result.data);
       }

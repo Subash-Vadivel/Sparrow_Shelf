@@ -8,7 +8,7 @@
     "server": "./node_modules/nodemon/bin/nodemon.js server/index.js",
     "start": "npm-run-all --parallel client server",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    },
   "author": "Subash",
   "license": "ISC",
   "dependencies": {
@@ -27,6 +27,7 @@
     "hapi": "^16.1.1",
     "hapi-auth-cookie": "^7.0.0",
     "hapi-cors": "^1.0.3",
+    "elasticsearch": "^16.7.2",
     "hapi-plugin-pg": "^1.1.2",
     "inert": "^4.2.1",
     "ioredis": "^4.23.0",
