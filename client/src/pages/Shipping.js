@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../components/Header'
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import Loading from '../components/Loading'
 import { Col, Row, Container, FloatingLabel, Form, Button } from 'react-bootstrap';
 import axiosPrivate from '../utils/axiosPrivate';
@@ -47,12 +48,12 @@ export default function Shipping() {
             <Row className='topspace'>
               <Col>
                 <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true,afterSaveCell: onAfterSaveCell }} exportCSV>
-                  <TableHeaderColumn isKey dataField='id' dataSort={true}>Product ID</TableHeaderColumn>
-                  <TableHeaderColumn dataField='book_id' editable={false}>Product Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField='user_id' editable={false}>User</TableHeaderColumn>
+                  <TableHeaderColumn isKey dataField='id' dataSort={true}>Order ID</TableHeaderColumn>
+                  <TableHeaderColumn dataField='book_id' editable={false}>Product ID</TableHeaderColumn>
+                  <TableHeaderColumn dataField='user_id' editable={false}>User ID</TableHeaderColumn>
                   <TableHeaderColumn dataField='amount' editable={false}>Amount</TableHeaderColumn>
                   <TableHeaderColumn dataField='quantity' editable={false}>Quantity</TableHeaderColumn>
-                  <TableHeaderColumn dataField='status' editable={{ type: 'select', options: { values: ['Processing', 'Shipped', 'Delivered','Rejected','Cancelled'] } }}>
+                  <TableHeaderColumn dataField='status' editable={{ type: 'select', options: { values: ['Processing', 'Shipped', 'Delivered','Returned'] } }}>
                     Status
                   </TableHeaderColumn>
                 </BootstrapTable>

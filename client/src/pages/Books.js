@@ -12,6 +12,7 @@ import Popup from "reactjs-popup"
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
 import {  useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 
 export default function Books() {
@@ -152,7 +153,7 @@ export default function Books() {
               </div>
               <div style={{ padding: '10px' }}>
                 <div>
-                  <Button variant="success">Add to Cart</Button>
+                  <Button variant="success" onClick={(e)=>addToCart(e,order.price,order.id)}>Add to Cart</Button>
                   <Button variant="success" style={{ float: "right" }} onClick={placeOrder}>Place Order</Button>
                 </div>
               </div>
@@ -217,7 +218,9 @@ export default function Books() {
             </Col>
           </Row>
         </Container>
+
       </>}
+      <Footer/>
     </>
   )
 }

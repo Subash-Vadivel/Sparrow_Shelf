@@ -1,5 +1,6 @@
 const models = require("models");
 const {addUpdateBook}=require("utils/bullQueue")
+const elastic=require('utils/elastic')
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {

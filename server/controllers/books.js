@@ -1,7 +1,7 @@
 const models = require("models");
 const redis = require('utils/redisConnection');
 const elastic=require('utils/elastic')
-const {addUpdateBook}=require('utils/bullQueue')
+const {addUpdateBook,addDeleteBook,addInsertBook}=require('utils/bullQueue')
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
@@ -76,7 +76,7 @@ const deleteBookById = async (Request, Reply) => {
         id: ids
       }
     });
-
+   addDeleteBook({id:ids})
     Reply("Done").code(200);
   }
   catch (err) {
@@ -110,8 +110,10 @@ const addBook = async (Request, Reply) => {
   try {
     const data = Request.payload;
     console.log(data);
-    const result = await models.books.create(data);
-    console.log(result);
+   const result=await models.books.create(data);
+   const datas={...data,id:result.dataValues.id}
+   addInsertBook(datas)
+  console.log(datas)
     Reply("ok").code(201);
   }
   catch (err) {

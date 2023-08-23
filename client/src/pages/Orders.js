@@ -9,12 +9,13 @@ import Button from 'react-bootstrap/Button'
 
 import { useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from 'react-redux';
+import Footer from '../components/Footer';
 
 export default function Orders() {
   const user = useSelector(state => state.auth.user);
   const userDetails=useSelector(state => state.auth.details);
   const [data, setData] = useState([])
-  const [start,setStart]=useState(0);
+  const [page,setPage]=useState(0);
   const navigate = useNavigate();
   const load = async () => {
     try {
@@ -65,7 +66,7 @@ export default function Orders() {
         <Row>
           {data.length === 0 ? <p>No Orders</p> : <>
             {
-              data.slice(start,start+8).map((item, index) => {
+              data.slice(page*8,page*8+8).map((item, index) => {
                 return (<Col key={index} style={{ marginBottom: '50px' }} >
 
                   <Card style={{ width: '18rem', height: '200px' }}>
@@ -101,13 +102,15 @@ export default function Orders() {
             }</>
           }
         </Row>
+        
         <Row>
-            <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+            <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
             </Col>
-            <Col>         {data.length > start * 8 + 8 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+            <Col>         {data.length > page*8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
             </Col>
           </Row>
       </Container>
+      <Footer/>
 
     </>
   )
