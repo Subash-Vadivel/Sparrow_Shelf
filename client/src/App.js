@@ -20,27 +20,27 @@ function App() {
   return (
     <>
       <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />}>
-              </Route>
-               { (!details  || details.isadmin===false) && 
-              <Route path="/book" element={<Books />}></Route>
-               }
-              {details && !details.isadmin &&
-              <>
+        <Routes>
+          <Route path="/" element={<Home />}>
+          </Route>
+          {(!details || details.isadmin === false) &&
+            <Route path="/book" element={<Books />}></Route>
+          }
+          {details && !details.isadmin &&
+            <>
               <Route path="/cart" element={<Cart />}></Route>
               <Route path="/order" element={<Orders />}></Route>
-              </>
-             }
-            
-            <Route path="/admin" element={<LoginRequired><Admin/></LoginRequired>}>
-              <Route index  element={<Dashboard/>}></Route>
-              <Route path='inventory' element={<Inventory/>}></Route>
-              <Route path='view-order' element={<Shipping/>}></Route>
-              </Route>
+            </>
+          }
 
-            <Route path="/*" element={<PageNotFound/>}></Route>
-            </Routes>
+          <Route path="/admin" element={<LoginRequired><Admin /></LoginRequired>}>
+            <Route index element={<Dashboard />}></Route>
+            <Route path='inventory' element={<Inventory />}></Route>
+            <Route path='view-order' element={<Shipping />}></Route>
+          </Route>
+
+          <Route path="/*" element={<PageNotFound />}></Route>
+        </Routes>
       </BrowserRouter>
 
     </>

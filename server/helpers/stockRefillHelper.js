@@ -1,5 +1,6 @@
 const Bull = require('bull');
 const models = require('models');
+
 const cleanUp = new Bull('Update');
 
 
@@ -7,6 +8,8 @@ const cleanUp = new Bull('Update');
 const options = {
   attempts: 2,
 };
+
+
 function update() {
   return new Promise(async (resolve, reject) => {
     try {
@@ -24,7 +27,7 @@ function update() {
   })
 }
 
-const heavyTask = () => {
+const refillStock = () => {
   cleanUp.add({ name: "suabsh" }, {
     repeat: { cron: '*/15 * * * *' },
   });
@@ -41,7 +44,7 @@ cleanUp.on('completed', (job) => {
 
 
 
-module.exports = { heavyTask }
+module.exports = {  refillStock }
 
 
 

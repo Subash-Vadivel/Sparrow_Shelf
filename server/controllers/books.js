@@ -1,19 +1,16 @@
 const models = require("models");
-const redis = require('utils/redisConnection');
-const elastic=require('utils/elastic')
-const {addUpdateBook,addDeleteBook,addInsertBook}=require('utils/bullQueue')
+const elastic = require('utils/elastic')
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
     console.log(book);
     if (book) {
-
-      // const books = await models.books.findAll({
-      //   where: {
-      //     book_name: { [models.Sequelize.Op.like]: `${book}%` }
-      //   }, attributes: ['id', 'price', 'stock', 'book_name']
-      // });
-      const books= await elastic.searchBook(book);
+      const bookids = await elastic.searchBook(book);
+      const books = await models.books.findAll({
+        where: {
+          id: bookids
+        }, attributes: ['id', 'price', 'stock', 'book_name']
+      });
       Reply(books);
     }
     else {
@@ -76,7 +73,6 @@ const deleteBookById = async (Request, Reply) => {
         id: ids
       }
     });
-   addDeleteBook({id:ids})
     Reply("Done").code(200);
   }
   catch (err) {
@@ -97,7 +93,6 @@ const updateBook = async (Request, Reply) => {
       }
     });
     // await elastic.updateBook(data,id);
-     addUpdateBook({content:data,id})
     Reply("ok").code(200)
   }
   catch (err) {
@@ -110,10 +105,7 @@ const addBook = async (Request, Reply) => {
   try {
     const data = Request.payload;
     console.log(data);
-   const result=await models.books.create(data);
-   const datas={...data,id:result.dataValues.id}
-   addInsertBook(datas)
-  console.log(datas)
+    await models.books.create(data);
     Reply("ok").code(201);
   }
   catch (err) {

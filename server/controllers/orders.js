@@ -1,6 +1,6 @@
 const models = require("models");
-const {addUpdateBook}=require("utils/bullQueue")
-const elastic=require('utils/elastic')
+const { addUpdateBook } = require("utils/bullQueue")
+const elastic = require('utils/elastic')
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {
@@ -23,8 +23,6 @@ const placeOrder = async (Request, Reply) => {
 
     //commit
     await t.commit();
-    const data={stock:newStock}
-    addUpdateBook({content:data,id:book_id});    //Bull
     Reply({ Status: true }).code(200);
   }
   catch (err) {
@@ -77,12 +75,10 @@ const cancelOrderById = async (Request, Reply) => {
         },
         transaction: t
       })
-      const newStock=result.quantity+result1.stock;
-      await result1.increment('stock', { by: result.quantity, transaction: t });
+      const newStock = result.quantity + result1.stock;
+      await result1.update({ stock: newStock }, { transaction: t });
       await result.destroy({ transaction: t });
       t.commit();
-    const data={stock:newStock}
-    addUpdateBook({content:data,id:result.book_id});
       return Reply({ status: true }).code(200);
     }
     Reply({ status: false }).code(200);

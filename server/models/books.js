@@ -1,4 +1,4 @@
-
+const helper = require("helpers");
 module.exports = (sequelize, DataTypes) => {
   const Books = sequelize.define("books", {
     id: {
@@ -24,6 +24,19 @@ module.exports = (sequelize, DataTypes) => {
       name: 'byBook'
     }]
   })
+
+  Books.afterUpdate((book, options) => {
+    helper.bookIndexHelper.addUpdateBook({ content: { book_name: book.book_name, stock: book.stock, price: book.price }, id: book.id })
+  });
+
+  Books.afterDestroy((book, options) => {
+    helper.bookIndexHelper.addDeleteBook({ id: book.id })
+
+  });
+
+  Books.afterCreate(async (book, options) => {
+    helper.bookIndexHelper.addInsertBook({ book_name: book.book_name, stock: book.stock, price: book.price, id: book.id })
+  });
 
   Books.associate = models => {
 

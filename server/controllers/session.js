@@ -2,7 +2,7 @@ const models = require("models")
 const { v4: uuid } = require("uuid")
 const bcrypt = require("bcrypt")
 const redis = require('utils/redisConnection');
-const { heavyTask,addTask } = require("utils/bullQueue");
+const helper=require('helpers');
 const login = async (Request, Reply) => {
   try {
     const { email, password } = Request.payload;
@@ -73,13 +73,9 @@ const signup = async (Request, Reply) => {
     })
     if (hasOne)
       return Reply("Already Exist").code(400)
-    // for(var i=0;i<10000000000;i++)
-    // {
-
-    // }
-    // heavyTask();
+    
     const result = await models.user.create({email,password:hashPassword});
-    addTask({ email });
+    helper.mailHelper.addTaskMail({ email });
     return Reply("Created").code(201);
 
   }
