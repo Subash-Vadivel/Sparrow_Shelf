@@ -19,8 +19,6 @@ export default function Orders() {
   const navigate = useNavigate();
   const load = async () => {
     try {
-      console.log(userDetails);
-      console.log(user);
       if(userDetails)
       {
       const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
@@ -35,8 +33,6 @@ export default function Orders() {
 
   const cancelOrder = async (e, id) => {
     e.preventDefault();
-    console.log("Cancel Req")
-    console.log(id);
     try {
       await axiosPrivate.delete(`/cancel-order/${id}`);
       load();

@@ -100,7 +100,6 @@ export default function Books() {
   const findItem = async () => {
     await axiosPrivate.get(`/books/${item}`).then((res) => {
       setOrder(res.data);
-      console.log(res);
     }).catch((err) => {
       console.log(err);
       setOrder(false);

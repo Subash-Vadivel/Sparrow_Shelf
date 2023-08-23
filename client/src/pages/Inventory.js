@@ -46,9 +46,8 @@ export default function Inventory() {
   };
   const onAfterSaveCell = async (row, cellName, cellValue) => {
     try {
-      console.log("Hitting")
       await axiosPrivate.put(`/updatebook/${row.id}`, { data: { [cellName]: cellValue } });
-      console.log('Updating', row.id, cellName, cellValue);
+      // console.log('Updating', row.id, cellName, cellValue);
       const updatedData = data.map(item =>
         item.id === row.id ? { ...item, [cellName]: cellValue } : item
       );
@@ -65,7 +64,7 @@ export default function Inventory() {
     try {
       // Perform your delete action here
       await axiosPrivate.post('/books/all', { ids: idsToDelete });
-      console.log('Deleting IDs:', idsToDelete);
+      // console.log('Deleting IDs:', idsToDelete);
       load(); // Reload the data after deletion
     } catch (err) {
       console.log(err);

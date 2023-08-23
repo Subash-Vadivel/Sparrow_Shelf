@@ -41,13 +41,11 @@ function Header(props) {
     try {
       if (book) {
         const result = await axiosPrivate.get(`/books?book=${book}`);
-        console.log(book)
         props.setData(result.data);
       }
       else {
 
         const result = await axiosPrivate.get("/books");
-        console.log(book)
         props.setData(result.data);
       }
     }
@@ -68,9 +66,7 @@ function Header(props) {
         setError("Invalid Password")
         return;
       }
-      console.log("Started ---> ")
       const result = await axiosPrivate.post("/login", { email, password });
-      console.log(result.data);
       await dispatch(cartData(result.data.id));
       await dispatch({ type: 'LOGIN', data: result.data })
       setEmail('');
@@ -78,7 +74,6 @@ function Header(props) {
       setError('');
       if(result.data.isadmin)
          navigate('/admin');
-      console.log("<--- Completed")
       setOpen(false);
     }
     catch (err) {
@@ -239,7 +234,6 @@ function Header(props) {
                     <Button variant="danger" onClick={(e) => { e.preventDefault(); dispatch(logout()); navigate('/') }}>Logout</Button> :
                     <Button variant="success" onClick={() => {
                       setOpen(true);
-                      console.log(isOpen)
                     }}>Login</Button>
                   }
 

@@ -10,6 +10,7 @@ const showCart = async (Request, Reply) => {
       include: [{
         model: models.cart,
         include: [{ model: models.books }]
+
       }]
     });
     Reply(result).code(200);
@@ -21,7 +22,6 @@ const showCart = async (Request, Reply) => {
 }
 const addToCart = async (Request, Reply) => {
   try {
-    console.log(Request.payload.item);
     const { uid, item } = Request.payload;
     const result = await models.cart.findOne({
       where: {
@@ -47,7 +47,6 @@ const removeFromCart = async (Request, Reply) => {
     const result = await models.cart.findOne({
       id: cid
     })
-    console.log(result);
     await result.destroy();
     Reply("ok").code(200)
 
