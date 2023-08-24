@@ -2,7 +2,7 @@ const models = require("models")
 const { v4: uuid } = require("uuid")
 const bcrypt = require("bcrypt")
 const redis = require('utils/redisConnection');
-const helper=require('helpers');
+const helper = require('helpers');
 const login = async (Request, Reply) => {
   try {
     const { email, password } = Request.payload;
@@ -73,8 +73,8 @@ const signup = async (Request, Reply) => {
     })
     if (hasOne)
       return Reply("Already Exist").code(400)
-    
-    const result = await models.user.create({email,password:hashPassword});
+
+    const result = await models.user.create({ email, password: hashPassword });
     helper.mailHelper.addTaskMail({ email });
     return Reply("Created").code(201);
 
