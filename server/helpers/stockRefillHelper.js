@@ -44,7 +44,7 @@ cleanUp.on('completed', (job) => {
 
 
 
-module.exports = {  refillStock }
+module.exports = { refillStock }
 
 
 

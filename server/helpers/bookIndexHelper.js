@@ -47,4 +47,4 @@ addBook.on('completed', (job) => {
   console.log("Added New Book to ES !!!")
 })
 
-module.exports={addDeleteBook,addInsertBook,addUpdateBook}
+module.exports = { addDeleteBook, addInsertBook, addUpdateBook }
