@@ -3,9 +3,10 @@ const elastic = require('utils/elastic')
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
+    const page = Request.query.page;
     console.log(book);
     if (book) {
-      const bookids = await elastic.searchBook(book);
+      const bookids = await elastic.searchBook(book, page);
       const books = await models.books.findAll({
         where: {
           id: bookids
@@ -14,8 +15,12 @@ const allBooks = async (Request, Reply) => {
       Reply(books);
     }
     else {
-
-      const books = await models.books.findAll({ attributes: ['id', 'price', 'stock', 'book_name'] });
+      const bookids = await elastic.searchAllBook(page);
+      const books = await models.books.findAll({
+        where: {
+          id: bookids
+        }, attributes: ['id', 'price', 'stock', 'book_name']
+      });
       Reply(books);
     }
 

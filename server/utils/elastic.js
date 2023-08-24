@@ -127,11 +127,14 @@ async function updateBook(data, id) {
   }
 }
 
-async function searchBook(searchString) {
+async function searchBook(searchString, page) {
   try {
     const response = await client.search({
       index: 'books',
       body: {
+
+        from: page * 12,
+        size: 12,
         query: {
           match_phrase: {
             book_name: searchString
@@ -148,7 +151,24 @@ async function searchBook(searchString) {
     console.log(err);
   }
 }
-
+async function searchAllBook(page) {
+  try {
+    const response = await client.search({
+      index: 'books',
+      body: {
+        from: page * 12,
+        size: 12
+      }
+    });
+    const data = response.hits.hits.map((item) => {
+      return item._id
+    })
+    return data;
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
 async function insertOrder(data) {
   try {
     await client.index({
@@ -198,5 +218,5 @@ async function deleteOrder(id) {
   }
 
 }
-const elastic = { client, insertBook, searchBook, deleteBook, updateBook, insertOrder, updateOrder, deleteOrder }
+const elastic = { client, insertBook, searchBook, searchAllBook, deleteBook, updateBook, insertOrder, updateOrder, deleteOrder }
 module.exports = elastic
