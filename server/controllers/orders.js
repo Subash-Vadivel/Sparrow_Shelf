@@ -1,6 +1,5 @@
 const models = require("models");
-const { addUpdateBook } = require("utils/bullQueue")
-const elastic = require('utils/elastic')
+const elastic = require("../utils/elastic");
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {
@@ -107,11 +106,12 @@ const updateOrder = async (Request, Reply) => {
   try {
     const data = Request.payload.data;
     const id = Request.params.id;
-    const result = await models.orders.update(data, {
+    await models.orders.update(data, {
       where: {
         id: id
       }
     });
+    await elastic.updateOrder(data, id);
     Reply("ok").code(200);
 
   }

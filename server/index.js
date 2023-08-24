@@ -3,6 +3,7 @@ const Hapi = require("hapi")
 const route = require("route")
 const models = require("models");
 const configStrategy = require("utils/configStrategy");
+// const sync = require("utils/sync")
 async function syncModels() {
   try {
     await models.sequelize.sync();

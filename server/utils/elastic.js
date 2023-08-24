@@ -1,20 +1,21 @@
 const { Client } = require('elasticsearch');
-const client = new Client({ node: 'http://localhost:9200',apiVersion:'6.8' });
+const client = new Client({ node: 'http://localhost:9200', apiVersion: '6.8' });
 
 console.log("---------------------------------------------")
 // Create an index
 async function createIndexBook() {
   try {
-     await client.indices.create({
+    await client.indices.create({
       index: 'books',
       body: {
         mappings: {
-          doc:{
+          doc: {
             properties: {
               book_name: { type: 'text' },
               stock: { type: 'integer' },
               price: { type: 'float' }
-            }}
+            }
+          }
         },
       },
     });
@@ -27,18 +28,19 @@ async function createIndexBook() {
 
 async function createIndexOrder() {
   try {
-     await client.indices.create({
+    await client.indices.create({
       index: 'orders',
       body: {
         mappings: {
-          doc:{
+          doc: {
             properties: {
               book_id: { type: 'integer' },
               user_id: { type: 'integer' },
               amount: { type: 'float' },
-              quantity:{type:'integer'},
-              status:{type:'keyword'}
-            }}
+              quantity: { type: 'integer' },
+              status: { type: 'keyword' }
+            }
+          }
         },
       },
     });
@@ -57,7 +59,7 @@ async function deleteDocument() {
     const { body } = await client.delete({
       index: 'books',
       id: '1',
-      type: '_doc', 
+      type: '_doc',
     });
 
     console.log(body);
@@ -77,58 +79,56 @@ async function deleteDocument() {
 
 async function insertBook(data) {
   try {
-     await client.index({
+    await client.index({
       index: 'books',
       id: data.id,
-      type: '_doc', 
+      type: '_doc',
       body: {
         book_name: data.book_name,
         stock: data.stock,
         price: data.price
       },
     });
-    console.log("Added Book ID : "+data.id);
+    console.log("Added Book ID : " + data.id);
 
   } catch (error) {
     console.error(error);
   }
 }
 
-async function deleteBook(id)
-{
-  try{
-  await client.delete({
-    index: 'books',
-    type: '_doc',
-    id: id
-  });
-}
-catch(err)
-{
-  console.log(err);
-}
+async function deleteBook(id) {
+  try {
+    await client.delete({
+      index: 'books',
+      type: '_doc',
+      id: id
+    });
+  }
+  catch (err) {
+    console.log(err);
+  }
 
 }
 
-async function updateBook(data,id) {
+async function updateBook(data, id) {
   try {
     await client.update({
       index: 'books',
-      type:'_doc',
+      type: '_doc',
       id: id,
       body: {
         doc: data,
-        doc_as_upsert:true
+        doc_as_upsert: true
       },
     });
-    console.log("Updated Book : "+id);
+    console.log("Updated Book : " + id);
   } catch (error) {
     console.error(error);
   }
 }
 
-async function searchBook(searchString){
-  try{
+async function searchBook(searchString) {
+  try {
     const response = await client.search({
       index: 'books',
       body: {
@@ -139,36 +139,64 @@ async function searchBook(searchString){
         }
       }
     });
-    const data=response.hits.hits.map((item)=>{
+    const data = response.hits.hits.map((item) => {
       return item._id
     })
     return data;
   }
-  catch(err){
+  catch (err) {
     console.log(err);
   }
 }
 
 async function insertOrder(data) {
   try {
-     await client.index({
+    await client.index({
       index: 'orders',
       id: data.id,
-      type: '_doc', 
+      type: '_doc',
       body: {
         book_id: data.book_id,
         user_id: data.user_id,
-        total:data.total,
-        quantity:data.quantity,
+        amount: data.amount,
+        quantity: data.quantity,
         status: data.status
       },
     });
-    console.log("Added Order ID : "+data.id);
+    console.log("Added Order ID : " + data.id);
 
   } catch (error) {
     console.error(error);
   }
 }
+async function updateOrder(data, id) {
+  try {
+    await client.update({
+      index: 'orders',
+      type: '_doc',
+      id: id,
+      body: {
+        doc: data,
+        doc_as_upsert: true
+      },
+    });
+    console.log("Updated Order : " + id);
+  } catch (error) {
+    console.error(error);
+  }
+}
+async function deleteOrder(id) {
+  try {
+    await client.delete({
+      index: 'orders',
+      type: '_doc',
+      id: id
+    });
+  }
+  catch (err) {
+    console.log(err);
+  }
 
-const elastic={client,insertBook,searchBook,deleteBook,updateBook,insertOrder}
-module.exports=elastic
+}
+const elastic = { client, insertBook, searchBook, deleteBook, updateBook, insertOrder, updateOrder, deleteOrder }
+module.exports = elastic
