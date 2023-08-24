@@ -1,4 +1,4 @@
-const helper = require("helpers/orderIndexHelper");
+// const helper = require("helpers/orderIndexHelper");
 
 module.exports = (sequelize, DataTypes) => {
   const Orders = sequelize.define("orders", {
@@ -42,14 +42,14 @@ module.exports = (sequelize, DataTypes) => {
   //   helper.orderIndexHelper.addUpdateOrder({ content: { status: order.status }, id: order.id })
   // });
 
-  Orders.afterDestroy(async (order, options) => {
-    helper.addDeleteOrder({ id: order.id })
+  // Orders.afterDestroy(async (order, options) => {
+  //   helper.addDeleteOrder({ id: order.id })
 
-  });
+  // });
 
-  Orders.afterCreate(async (order, options) => {
-    helper.addInsertOrder({ book_id: order.book_id, user_id: order.user_id, quantity: order.quantity, amount: order.amount, status: order.status, id: order.id })
-  });
+  // Orders.afterCreate(async (order, options) => {
+  //   helper.addInsertOrder({ book_id: order.book_id, user_id: order.user_id, quantity: order.quantity, amount: order.amount, status: order.status, id: order.id })
+  // });
 
   Orders.associate = (models) => {
 
