@@ -90,3 +90,9 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+.center-img{
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
