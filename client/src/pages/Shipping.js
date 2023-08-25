@@ -12,7 +12,17 @@ export default function Shipping() {
     try {
       console.log("load")
       const result = await axiosPrivate.get('/orders/all');
-      setData(result.data);
+      const filter = result.data.map((item) => {
+        return {
+          id: item.id,
+          product_name: item.book.book_name,
+          user_name: item.user.user_name ? item.user.user_name : item.user_id,
+          amount: item.amount,
+          quantity: item.quantity,
+          status: item.status
+        }
+      })
+      setData(filter);
       setstatus(true);
       console.log(result.data);
     }
@@ -47,13 +57,13 @@ export default function Shipping() {
             </Row>
             <Row className='topspace'>
               <Col>
-                <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true,afterSaveCell: onAfterSaveCell }} exportCSV>
+                <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true, afterSaveCell: onAfterSaveCell }} exportCSV>
                   <TableHeaderColumn isKey dataField='id' dataSort={true}>Order ID</TableHeaderColumn>
-                  <TableHeaderColumn dataField='book_id' editable={false}>Product ID</TableHeaderColumn>
-                  <TableHeaderColumn dataField='user_id' editable={false}>User ID</TableHeaderColumn>
+                  <TableHeaderColumn dataField='product_name' editable={false}>Product Name</TableHeaderColumn>
+                  <TableHeaderColumn dataField='user_name' editable={false}>User Name</TableHeaderColumn>
                   <TableHeaderColumn dataField='amount' editable={false}>Amount</TableHeaderColumn>
                   <TableHeaderColumn dataField='quantity' editable={false}>Quantity</TableHeaderColumn>
-                  <TableHeaderColumn dataField='status' editable={{ type: 'select', options: { values: ['Processing', 'Shipped', 'Delivered','Returned'] } }}>
+                  <TableHeaderColumn dataField='status' editable={{ type: 'select', options: { values: ['Processing', 'Shipped', 'Delivered', 'Returned'] } }}>
                     Status
                   </TableHeaderColumn>
                 </BootstrapTable>

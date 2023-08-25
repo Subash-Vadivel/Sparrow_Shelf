@@ -106,10 +106,10 @@ export default function Books() {
 
   const findItem = async () => {
     await axiosPrivate.get(`/books/${item}`).then((res) => {
-      setOrder(res.data);
+      setOrder(prev => res.data);
     }).catch((err) => {
       console.log(err);
-      setOrder(false);
+      setOrder(prev => false);
     })
   }
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function Books() {
       <Header setData={setData} setSearch={setSearch} />
       <Popup
         open={isOpen}
-        onClose={() => { setQty(1); setOpen(false); }}
+        onClose={() => { setQty(1); setOpen(false); setOrder(false); setItem(0) }}
         position="center"
         className='login-popup'
       >

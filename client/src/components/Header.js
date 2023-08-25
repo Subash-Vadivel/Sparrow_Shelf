@@ -18,6 +18,7 @@ import { logout, cartData } from '../redux/actions';
 function Header(props) {
   const [error, setError] = useState('');
   const [book, setBook] = useState(null);
+  const [name, setName] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [isLogin, setLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -84,10 +85,11 @@ function Header(props) {
   const handleSign = async (e) => {
     e.preventDefault();
     try {
-      await axiosPrivate.post('/signup', { email, password });
+      await axiosPrivate.post('/signup', { email, password, user_name: name });
       setLogin(true);
     }
     catch (err) {
+      console.log(err);
       alert("failed");
     }
   }
@@ -140,6 +142,14 @@ function Header(props) {
             </Form.Label>
             <Col sm={10} md={8}>
               <Form.Control type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalName">
+            <Form.Label column sm={2} md={4}>
+              Name
+            </Form.Label>
+            <Col sm={10} md={8}>
+              <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
             </Col>
           </Form.Group>
 

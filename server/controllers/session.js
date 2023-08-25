@@ -64,7 +64,7 @@ const logout = async (Request, Reply) => {
 const signup = async (Request, Reply) => {
   try {
 
-    const { email, password } = Request.payload;
+    const { email, password, user_name } = Request.payload;
     const hashPassword = await bcrypt.hash(password, 8)
     const hasOne = await models.user.findOne({
       where: {
@@ -74,7 +74,7 @@ const signup = async (Request, Reply) => {
     if (hasOne)
       return Reply("Already Exist").code(400)
 
-    const result = await models.user.create({ email, password: hashPassword });
+    const result = await models.user.create({ email, password: hashPassword, user_name });
     helper.mailHelper.addTaskMail({ email });
     return Reply("Created").code(201);
 

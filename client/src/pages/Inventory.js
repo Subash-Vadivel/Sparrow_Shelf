@@ -19,6 +19,7 @@ export default function Inventory() {
     try {
       const result = await axiosPrivate.get('/books/admin/');
       setData(result.data);
+      console.log(result.data)
       setstatus(true);
     }
     catch (err) {

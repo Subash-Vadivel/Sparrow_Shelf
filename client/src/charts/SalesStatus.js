@@ -44,11 +44,10 @@ export default function SalesStatus() {
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis />
+              <YAxis dataKey="order" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="order" fill="#8884d8" />
-              <Bar dataKey="amount" fill="#82ca9d" />
+              <Bar dataKey="order" fill="#00C49F" />
             </BarChart>
 
           </ResponsiveContainer>

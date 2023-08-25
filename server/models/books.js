@@ -1,4 +1,3 @@
-// const helper = require("helpers/bookIndexHelper");
 module.exports = (sequelize, DataTypes) => {
   const Books = sequelize.define("books", {
     id: {
@@ -25,18 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     }]
   })
 
-  // Books.afterUpdate((book, options) => {
-  //   helper.addUpdateBook({ content: { book_name: book.book_name, stock: book.stock, price: book.price }, id: book.id })
-  // });
-
-  // Books.afterDestroy((book, options) => {
-  //   helper.addDeleteBook({ id: book.id })
-
-  // });
-
-  // Books.afterCreate(async (book, options) => {
-  //   helper.addInsertBook({ book_name: book.book_name, stock: book.stock, price: book.price, id: book.id })
-  // });
 
   Books.associate = models => {
 
@@ -45,7 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         name: "book_id"
       }
     })
-
+    Books.hasMany(models.orders, {
+      foreignKey: {
+        name: "book_id"
+      }
+    })
 
   };
 

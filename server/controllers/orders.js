@@ -45,7 +45,6 @@ const orderByUID = async (Request, Reply) => {
       }]
 
     })
-    console.log(result);
     Reply(result[0].orders);
 
   }
@@ -90,7 +89,14 @@ const cancelOrderById = async (Request, Reply) => {
 
 const allOrders = async (Request, Reply) => {
   try {
-    const result = await models.orders.findAll({});
+    const result = await models.orders.findAll({
+      include: [{
+        model: models.user
+      }, {
+        model: models.books
+      }]
+    });
+    console.log(result[0].dataValues);
     Reply(result).code(200);
 
   }

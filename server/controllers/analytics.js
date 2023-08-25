@@ -14,6 +14,7 @@ const orderStatus = async (Request, Reply) => {
 const bookSales = async (Request, Reply) => {
   try {
     const data = await helper.analyticHelper.runBookSalesStatus();
+    console.log(data);
     const bookids = data.map((item) => item.key);
     const books = await models.books.findAll({
       where: {
