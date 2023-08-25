@@ -20,20 +20,20 @@ export default function Cart() {
   const [item, setItem] = useState(0);
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
-  const [page,setPage]=useState(0);
+  const [page, setPage] = useState(0);
   const navigate = useNavigate();
-  const user  = useSelector(state => state.auth.user);
-  const details  = useSelector(state => state.auth.details);
-  const data  = useSelector(state => state.content.allCarts);
+  const user = useSelector(state => state.auth.user);
+  const details = useSelector(state => state.auth.details);
+  const data = useSelector(state => state.content.allCarts);
   const dispatch = useDispatch();
-  
-  const handleRemove=async(e,cid)=>{
+
+  const handleRemove = async (e, cid) => {
     e.preventDefault();
-    try{
-        await axiosPrivate.delete(`/removecart/${cid}`)
-        await dispatch(cartData(details.id))
+    try {
+      await axiosPrivate.delete(`/removecart/${cid}`)
+      await dispatch(cartData(details.id))
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
   }
@@ -50,25 +50,23 @@ export default function Cart() {
       alert("Order Placed");
     }
     catch (err) {
-      if(err.response.data.statusCode===401)
-      {
+      if (err.response.data.statusCode === 401) {
         await dispatch(logout()); navigate('/')
       }
       console.log(err);
     }
   }
-  const load=async()=>{
+  const load = async () => {
     if (!user) {
       alert("Plz Login");
-      navigate('/'); 
+      navigate('/');
     }
-    else
-    {
-          await dispatch(cartData(details.id));
+    else {
+      await dispatch(cartData(details.id));
     }
   }
   useEffect(() => {
-    
+
   }, [])
 
 
@@ -87,7 +85,7 @@ export default function Cart() {
 
   return (
     <>
-     <Popup
+      <Popup
         open={isOpen}
         onClose={() => { setQty(1); setOpen(false); }}
         position="center"
@@ -127,7 +125,7 @@ export default function Cart() {
               </div>
               <div style={{ padding: '10px' }}>
                 <div>
-                  <Button variant="danger" onClick={()=>{setQty(1);setOpen(false)}}>Close</Button>
+                  <Button variant="danger" onClick={() => { setQty(1); setOpen(false) }}>Close</Button>
                   <Button variant="success" style={{ float: "right" }} onClick={placeOrder}>Place Order</Button>
                 </div>
               </div>
@@ -135,62 +133,61 @@ export default function Cart() {
           </Container> : <Loading />}
 
       </Popup>
-     
+
       <Header />
       <Container>
-        {data.length === 0 ? <p>Cart Is Empty</p> : <>
-        <Row>
-        {data.slice(page*8,page*8+8).map((item,idx)=>{
-          console.log(item);
-          return (
-            <Col style={{ marginBottom: '50px' }} key={idx}>
-            <Card style={{ width: '18rem', height: '275px' }}>
-              <Card.Body>
-                <Card.Title >{item.book.book_name}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">₹{item.book.price}</Card.Subtitle>
-                <Card.Text>
-                 { item.book.stock>0? `Only ${item.book.stock} stocks left Hurry!!!`:"New Stocks Will arrive Soon 🚛" }
-                </Card.Text>
-              </Card.Body>
-              <div>
-                <h6 style={{ textAlign: 'right', marginRight: "5px" }}><span style={{ color: 'red' }}>{item.book.stock <= 3 && item.book.stock>0? "Few Stocks Left : " + item.book.stock : ""}{item.book.stock <=0? "Out Of Stock !"  : ""}</span>{item.book.stock > 3 ? "Stock Left : " + item.book.stock : ""} </h6>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '10px' }}>
-                
-              </div>
-              <div style={{ padding: '10px' }}>
-                <div>
-                  <Button variant="danger" onClick={(e)=>handleRemove(e,item.id)}>Remove</Button>
-                  <Button variant="success" style={{ float: "right" }}  onClick={() => {
-                      if (user && item.stock<=0) {
-                        alert("Sorry Out Of Stock")
-                      }
-                      else if(user)
-                      {
-                        setItem(prev => item.book_id); setOpen(true);
-
-                      }
-                      else {
-                        alert("You Need To Login First");
-                      }
-                    }}>Place Order</Button>
-                </div>
-              </div>
-            </Card>
-          </Col>
-          );
-        })}
+        {data.length === 0 ? <div className='center-img'><img src="https://assets.materialup.com/uploads/66fb8bdf-29db-40a2-996b-60f3192ea7f0/preview.png" alt='loading' /></div> : <>
           <Row>
-            <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
-            </Col>
-            <Col>         {data.length > page*8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
-            </Col>
-          </Row>
+            {data.slice(page * 8, page * 8 + 8).map((item, idx) => {
+              console.log(item);
+              return (
+                <Col style={{ marginBottom: '50px' }} key={idx}>
+                  <Card style={{ width: '18rem', height: '275px' }}>
+                    <Card.Body>
+                      <Card.Title >{item.book.book_name}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">₹{item.book.price}</Card.Subtitle>
+                      <Card.Text>
+                        {item.book.stock > 0 ? `Only ${item.book.stock} stocks left Hurry!!!` : "New Stocks Will arrive Soon 🚛"}
+                      </Card.Text>
+                    </Card.Body>
+                    <div>
+                      <h6 style={{ textAlign: 'right', marginRight: "5px" }}><span style={{ color: 'red' }}>{item.book.stock <= 3 && item.book.stock > 0 ? "Few Stocks Left : " + item.book.stock : ""}{item.book.stock <= 0 ? "Out Of Stock !" : ""}</span>{item.book.stock > 3 ? "Stock Left : " + item.book.stock : ""} </h6>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '10px' }}>
 
-     </Row>
+                    </div>
+                    <div style={{ padding: '10px' }}>
+                      <div>
+                        <Button variant="danger" onClick={(e) => handleRemove(e, item.id)}>Remove</Button>
+                        <Button variant="success" style={{ float: "right" }} onClick={() => {
+                          if (user && item.stock <= 0) {
+                            alert("Sorry Out Of Stock")
+                          }
+                          else if (user) {
+                            setItem(prev => item.book_id); setOpen(true);
+
+                          }
+                          else {
+                            alert("You Need To Login First");
+                          }
+                        }}>Place Order</Button>
+                      </div>
+                    </div>
+                  </Card>
+                </Col>
+              );
+            })}
+            <Row>
+              <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+              </Col>
+              <Col>         {data.length > page * 8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+              </Col>
+            </Row>
+
+          </Row>
         </>}
       </Container>
-      <Footer/>
+      <Footer />
 
     </>
   )

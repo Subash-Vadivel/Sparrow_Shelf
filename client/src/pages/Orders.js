@@ -13,16 +13,15 @@ import Footer from '../components/Footer';
 
 export default function Orders() {
   const user = useSelector(state => state.auth.user);
-  const userDetails=useSelector(state => state.auth.details);
+  const userDetails = useSelector(state => state.auth.details);
   const [data, setData] = useState([])
-  const [page,setPage]=useState(0);
+  const [page, setPage] = useState(0);
   const navigate = useNavigate();
   const load = async () => {
     try {
-      if(userDetails)
-      {
-      const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
-      setData(result.data);
+      if (userDetails) {
+        const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
+        setData(result.data);
       }
     }
     catch (err) {
@@ -52,17 +51,17 @@ export default function Orders() {
 
     load();
   }, [])
-  useEffect(()=>{
-   load();
-  },[userDetails]);
+  useEffect(() => {
+    load();
+  }, [userDetails]);
   return (
     <>
       <Header />
       <Container>
         <Row>
-          {data.length === 0 ? <p>No Orders</p> : <>
+          {data.length === 0 ? <div className='center-img'><img src="https://cdn.dribbble.com/users/357929/screenshots/2276751/media/678caef6068a976e4a0d94bbdba6b660.png?resize=400x0" alt='loading' /></div> : <>
             {
-              data.slice(page*8,page*8+8).map((item, index) => {
+              data.slice(page * 8, page * 8 + 8).map((item, index) => {
                 return (<Col key={index} style={{ marginBottom: '50px' }} >
 
                   <Card style={{ width: '18rem', height: '200px' }}>
@@ -75,21 +74,21 @@ export default function Orders() {
                       </Card.Text>
                       <div>
                         {
-                           item.status==="Delivered"?<>
-                           <Button variant="success" style={{ float: 'left' }} >Return</Button>
-                           <Button variant="success" style={{ float: 'right' }} href='https://sprw.io/stt-h2XdNbpJzECBYMQisWCQqe'> Review</Button>
-                           </>:
-                          <>
-                          {item.status==="Rejected" ||item.status==="Cancelled" ?<>
-                          <Button variant="danger" style={{ float: 'right' }}> Support</Button>
+                          item.status === "Delivered" ? <>
+                            <Button variant="success" style={{ float: 'left' }} >Return</Button>
+                            <Button variant="success" style={{ float: 'right' }} href='https://sprw.io/stt-h2XdNbpJzECBYMQisWCQqe'> Review</Button>
+                          </> :
+                            <>
+                              {item.status === "Rejected" || item.status === "Cancelled" ? <>
+                                <Button variant="danger" style={{ float: 'right' }}> Support</Button>
 
-                          </>:
-                          <>
-                        <Button variant="success" style={{ float: 'left' }} onClick={(e) => cancelOrder(e, item.id)}>Cancel</Button>
-                        <Button variant="success" style={{ float: 'right' }}> Track</Button>
-                        </> }
-                        </>
-                      } 
+                              </> :
+                                <>
+                                  <Button variant="success" style={{ float: 'left' }} onClick={(e) => cancelOrder(e, item.id)}>Cancel</Button>
+                                  <Button variant="success" style={{ float: 'right' }}> Track</Button>
+                                </>}
+                            </>
+                        }
                       </div>
                     </Card.Body>
                   </Card>
@@ -98,15 +97,15 @@ export default function Orders() {
             }</>
           }
         </Row>
-        
+
         <Row>
-            <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
-            </Col>
-            <Col>         {data.length > page*8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
-            </Col>
-          </Row>
+          <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+          </Col>
+          <Col>         {data.length > page * 8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+          </Col>
+        </Row>
       </Container>
-      <Footer/>
+      <Footer />
 
     </>
   )
