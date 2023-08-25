@@ -8,16 +8,16 @@ import Loading from '../components/Loading';
 
 export default function Inventory() {
 
-  const [book_name,setBookName]=useState('');
-  const [stock,setStock]=useState(1);
-  const [price,setPrice]=useState(0);
+  const [book_name, setBookName] = useState('');
+  const [stock, setStock] = useState(1);
+  const [price, setPrice] = useState(0);
 
   const [addData, setAddData] = useState(false);
   const [status, setstatus] = useState(false)
   const [data, setData] = useState([]);
   const load = async () => {
     try {
-      const result = await axiosPrivate.get('/books');
+      const result = await axiosPrivate.get('/books/admin/');
       setData(result.data);
       setstatus(true);
     }
@@ -27,11 +27,11 @@ export default function Inventory() {
   }
   useEffect((() => { load() }), [])
 
- const clear=()=>{
-     setBookName('');
-     setPrice(0);
-     setStock(1);
- }
+  const clear = () => {
+    setBookName('');
+    setPrice(0);
+    setStock(1);
+  }
 
 
   const selectRowProp = {
@@ -71,14 +71,14 @@ export default function Inventory() {
     }
   }
 
-  const handleAddData=async(e)=>{
+  const handleAddData = async (e) => {
     e.preventDefault();
-    try{
-       const result=await axiosPrivate.post('books/add',{book_name,price,stock});
-       clear()
-       load();
+    try {
+      const result = await axiosPrivate.post('books/add', { book_name, price, stock });
+      clear()
+      load();
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
   }
@@ -87,45 +87,45 @@ export default function Inventory() {
     <>
       <Popup
         open={addData}
-        onClose={() => { setAddData(false);  clear(); }}
+        onClose={() => { setAddData(false); clear(); }}
         position="center"
         className='login-popup'
       >
         <Container fluid className='login-template'>
-        <Form className='popup-form'>
-          <Form.Group as={Row} className="mb-3" controlId="formHorizontalBookName">
-            <Form.Label column sm={2} md={4}>
-              Book Name
-            </Form.Label>
-            <Col sm={10} md={8}>
-              <Form.Control type="name" placeholder="Name" value={book_name} onChange={(e) => setBookName(e.target.value)} />
-            </Col>
-          </Form.Group>
+          <Form className='popup-form'>
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontalBookName">
+              <Form.Label column sm={2} md={4}>
+                Book Name
+              </Form.Label>
+              <Col sm={10} md={8}>
+                <Form.Control type="name" placeholder="Name" value={book_name} onChange={(e) => setBookName(e.target.value)} />
+              </Col>
+            </Form.Group>
 
-          <Form.Group as={Row} className="mb-3" controlId="formHorizontalStock">
-            <Form.Label column sm={2} md={4}>
-              Stock
-            </Form.Label>
-            <Col sm={10} md={8}>
-              <Form.Control type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock" />
-            </Col>
-          </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontalStock">
+              <Form.Label column sm={2} md={4}>
+                Stock
+              </Form.Label>
+              <Col sm={10} md={8}>
+                <Form.Control type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder="Stock" />
+              </Col>
+            </Form.Group>
 
-          <Form.Group as={Row} className="mb-3" controlId="formHorizontalPrice">
-            <Form.Label column sm={2} md={4}>
-              Price
-            </Form.Label>
-            <Col sm={10} md={8}>
-              <Form.Control type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" />
-            </Col>
-          </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontalPrice">
+              <Form.Label column sm={2} md={4}>
+                Price
+              </Form.Label>
+              <Col sm={10} md={8}>
+                <Form.Control type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" />
+              </Col>
+            </Form.Group>
 
-          <Form.Group as={Row} className="mb-3 justify-content-center">
-            <Col className="text-center">
-              <Button type="submit" variant='success' onClick={(e)=>handleAddData(e)}>Confirm</Button>
-            </Col>
-          </Form.Group>
-         </Form>
+            <Form.Group as={Row} className="mb-3 justify-content-center">
+              <Col className="text-center">
+                <Button type="submit" variant='success' onClick={(e) => handleAddData(e)}>Confirm</Button>
+              </Col>
+            </Form.Group>
+          </Form>
 
 
         </Container>
@@ -161,8 +161,8 @@ export default function Inventory() {
             <Row className='topspace'>
               <Col>
                 <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true, afterSaveCell: onAfterSaveCell }}
-                  selectRow={selectRowProp} 
-                  >
+                  selectRow={selectRowProp}
+                >
                   <TableHeaderColumn isKey dataField='id' dataSort={true}>Product ID</TableHeaderColumn>
                   <TableHeaderColumn dataField='book_name'  >Product Name</TableHeaderColumn>
                   <TableHeaderColumn dataField='stock'>Stock</TableHeaderColumn>
@@ -172,7 +172,7 @@ export default function Inventory() {
             </Row>
           </Container>
         )
-        : (<><Loading/></>)
+        : (<><Loading /></>)
       }
     </>
   )

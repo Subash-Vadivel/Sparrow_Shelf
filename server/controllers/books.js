@@ -47,13 +47,10 @@ const bookByID = async (Request, Reply) => {
   }
 }
 
-const bookByParams = async (Request, Reply) => {
+const bookByAdmin = async (Request, Reply) => {
   try {
-    const page = parseInt(Request.params.page);
     const result = await models.books.findAll({
-      where: {
-        id: { [models.Sequelize.Op.between]: [page * 12 + 1, (page * 12) + 12] }
-      }, attributes: ['id', 'price', 'stock', 'book_name']
+      attributes: ['id', 'price', 'stock', 'book_name']
     })
     //  console.log(result);
 
@@ -119,4 +116,4 @@ const addBook = async (Request, Reply) => {
   }
 }
 
-module.exports = { allBooks, bookByID, bookByParams, deleteBookById, updateBook, addBook }
+module.exports = { allBooks, bookByID, bookByAdmin, deleteBookById, updateBook, addBook }
