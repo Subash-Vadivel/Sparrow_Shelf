@@ -1,5 +1,5 @@
 const handler = require("controllers")
-
+const Joi = require("joi")
 
 const route = [{
   method: "GET",
@@ -12,7 +12,12 @@ const route = [{
   method: "GET",
   path: "/books/{id}",
   config: {
-    handler: handler.books.bookByID
+    handler: handler.books.bookByID,
+    validate: {
+      params: {
+        id: Joi.number().required()
+      }
+    }
   }
 },
 {
@@ -26,14 +31,24 @@ const route = [{
   method: "POST",
   path: "/books/all",
   config: {
-    handler: handler.books.deleteBookById
+    handler: handler.books.deleteBookById,
+    validate: {
+      payload: {
+        ids: Joi.array().required()
+      }
+    }
   }
 },
 {
   method: "PUT",
   path: "/updatebook/{id}",
   config: {
-    handler: handler.books.updateBook
+    handler: handler.books.updateBook,
+    validate: {
+      params: {
+        id: Joi.number().required()
+      }
+    }
   }
 },
 {

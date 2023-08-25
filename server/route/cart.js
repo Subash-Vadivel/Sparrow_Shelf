@@ -1,5 +1,5 @@
 const handler = require("controllers")
-
+const Joi = require("joi")
 const route = [{
   method: "GET",
   path: "/cart/{uid}",
@@ -8,7 +8,12 @@ const route = [{
       strategy: 'session',
       mode: "required"
     },
-    handler: handler.cart.showCart
+    handler: handler.cart.showCart,
+    validate: {
+      params: {
+        uid: Joi.number().required(),
+      }
+    }
   }
 }, {
   method: "POST",
@@ -29,7 +34,12 @@ const route = [{
       strategy: 'session',
       mode: "required"
     },
-    handler: handler.cart.removeFromCart
+    handler: handler.cart.removeFromCart,
+    validate: {
+      params: {
+        cid: Joi.number().required(),
+      }
+    }
   }
 
 }
