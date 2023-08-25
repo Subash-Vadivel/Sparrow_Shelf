@@ -11,12 +11,13 @@ import Popup from "reactjs-popup"
 
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
 
 export default function Books() {
 
+  const [search, setSearch] = useState('');
   const [data, setData] = useState(null);
   const [isOpen, setOpen] = useState(false);
   const [start, setStart] = useState(0);
@@ -24,23 +25,30 @@ export default function Books() {
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
 
-  const navigate=useNavigate();
-  const user  = useSelector(state => state.auth.user);
-  const details  = useSelector(state => state.auth.details);
+  const navigate = useNavigate();
+  const user = useSelector(state => state.auth.user);
+  const details = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
 
-    //  For Pagination Concept
-  // useEffect(()=>{
-  //   load();
-  // },[start])
+  //  For Pagination Concept
+  useEffect(() => {
+    console.log("Loading")
+    load();
+  }, [start, search])
 
 
 
   const load = async () => {
     try {
       // const result = await axiosPrivate.get(`/books/page/${start}`);
-      const result=await axiosPrivate.get("/books");
-      setData(result.data);
+      if (search) {
+        const result = await axiosPrivate.get(`/books?book=${search}&page=${start}`);
+        setData(result.data)
+      }
+      else {
+        const result = await axiosPrivate.get(`/books?page=${start}`);
+        setData(result.data);
+      }
     }
     catch (err) {
       console.log(err);
@@ -50,28 +58,28 @@ export default function Books() {
     load();
   }, [])
 
-  const addToCart=async(e,price,id)=>{
+  const addToCart = async (e, price, id) => {
     e.preventDefault();
-    try{
+    try {
 
-      if(user){
-       const result=await axiosPrivate.post("/addtocart",{item:{
-        book_id:id,user_id:details.id,price:price},uid:details.id
-       })
-       if(result.data.status){
-           dispatch(cartData(details.id))
-           alert("Item Added")
-       }
+      if (user) {
+        const result = await axiosPrivate.post("/addtocart", {
+          item: {
+            book_id: id, user_id: details.id, price: price
+          }, uid: details.id
+        })
+        if (result.data.status) {
+          dispatch(cartData(details.id))
+          alert("Item Added")
+        }
         else
-           alert("Item Already in Cart")
+          alert("Item Already in Cart")
       }
-      else
-      {
+      else {
         alert("Please Login First");
       }
     }
-    catch(err)
-    {
+    catch (err) {
       alert("Some thing went wrong")
       console.log(err);
     }
@@ -89,8 +97,7 @@ export default function Books() {
       alert("Order Placed");
     }
     catch (err) {
-      if(err.response.data.statusCode===401)
-      {
+      if (err.response.data.statusCode === 401) {
         await dispatch(logout()); navigate('/')
       }
       console.log(err);
@@ -99,10 +106,10 @@ export default function Books() {
 
   const findItem = async () => {
     await axiosPrivate.get(`/books/${item}`).then((res) => {
-      setOrder(res.data);
+      setOrder(prev => res.data);
     }).catch((err) => {
       console.log(err);
-      setOrder(false);
+      setOrder(prev => false);
     })
   }
   useEffect(() => {
@@ -111,10 +118,10 @@ export default function Books() {
 
   return (
     <>
-      <Header setData={setData} />
+      <Header setData={setData} setSearch={setSearch} />
       <Popup
         open={isOpen}
-        onClose={() => { setQty(1); setOpen(false); }}
+        onClose={() => { setQty(1); setOpen(false); setOrder(false); setItem(0) }}
         position="center"
         className='login-popup'
       >
@@ -152,7 +159,7 @@ export default function Books() {
               </div>
               <div style={{ padding: '10px' }}>
                 <div>
-                  <Button variant="success" onClick={(e)=>addToCart(e,order.price,order.id)}>Add to Cart</Button>
+                  <Button variant="success" onClick={(e) => addToCart(e, order.price, order.id)}>Add to Cart</Button>
                   <Button variant="success" style={{ float: "right" }} onClick={placeOrder}>Place Order</Button>
                 </div>
               </div>
@@ -164,7 +171,7 @@ export default function Books() {
 
         <Container >
           <Row>
-            {data.slice(start*12,start*12+12).map((item, index) => {
+            {data.map((item, index) => {
               return (<Col style={{ marginBottom: '50px' }} key={index}>
                 <Card style={{ width: '18rem', height: '275px' }} >
                   <Card.Body>
@@ -176,16 +183,15 @@ export default function Books() {
 
                   </Card.Body>
                   <div>
-                    <h6 style={{ textAlign: 'right', marginRight: "5px" }}><span style={{ color: 'red' }}>{item.stock <= 3 && item.stock > 0 ? "Few Stocks Left : " + item.stock : ""}</span>{item.stock > 3 ? "Stock Left : " + item.stock : ""} {item.stock<=0?"Out Of Stock":""} </h6>
+                    <h6 style={{ textAlign: 'right', marginRight: "5px" }}><span style={{ color: 'red' }}>{item.stock <= 3 && item.stock > 0 ? "Few Stocks Left : " + item.stock : ""}</span>{item.stock > 3 ? "Stock Left : " + item.stock : ""} {item.stock <= 0 ? "Out Of Stock" : ""} </h6>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '10px' }}>
-                    <Button variant="success" onClick={(e)=>addToCart(e,item.price,item.id)}>Add to Cart</Button>
+                    <Button variant="success" onClick={(e) => addToCart(e, item.price, item.id)}>Add to Cart</Button>
                     <Button variant="success" onClick={() => {
-                      if (user && item.stock<=0) {
+                      if (user && item.stock <= 0) {
                         alert("Sorry Out Of Stock")
                       }
-                      else if(user)
-                      {
+                      else if (user) {
                         setItem(prev => item.id); setOpen(true);
 
                       }
@@ -210,16 +216,16 @@ export default function Books() {
             </Col>
           </Row> */}
 
-            <Row>
+          <Row>
             <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
             </Col>
-            <Col>         {data.length > start*12 + 12 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+            <Col>         {data.length > 0 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
             </Col>
           </Row>
         </Container>
 
       </>}
-      <Footer/>
+      <Footer />
     </>
   )
 }

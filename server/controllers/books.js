@@ -1,24 +1,26 @@
 const models = require("models");
-const redis = require('utils/redisConnection');
-const elastic=require('utils/elastic')
-const {addUpdateBook,addDeleteBook,addInsertBook}=require('utils/bullQueue')
+const elastic = require('utils/elastic')
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
+    const page = Request.query.page;
     console.log(book);
     if (book) {
-
-      // const books = await models.books.findAll({
-      //   where: {
-      //     book_name: { [models.Sequelize.Op.like]: `${book}%` }
-      //   }, attributes: ['id', 'price', 'stock', 'book_name']
-      // });
-      const books= await elastic.searchBook(book);
+      const bookids = await elastic.searchBook(book, page);
+      const books = await models.books.findAll({
+        where: {
+          id: bookids
+        }, attributes: ['id', 'price', 'stock', 'book_name']
+      });
       Reply(books);
     }
     else {
-
-      const books = await models.books.findAll({ attributes: ['id', 'price', 'stock', 'book_name'] });
+      const bookids = await elastic.searchAllBook(page);
+      const books = await models.books.findAll({
+        where: {
+          id: bookids
+        }, attributes: ['id', 'price', 'stock', 'book_name']
+      });
       Reply(books);
     }
 
@@ -45,13 +47,10 @@ const bookByID = async (Request, Reply) => {
   }
 }
 
-const bookByParams = async (Request, Reply) => {
+const bookByAdmin = async (Request, Reply) => {
   try {
-    const page = parseInt(Request.params.page);
     const result = await models.books.findAll({
-      where: {
-        id: { [models.Sequelize.Op.between]: [page * 12 + 1, (page * 12) + 12] }
-      }, attributes: ['id', 'price', 'stock', 'book_name']
+      attributes: ['id', 'price', 'stock', 'book_name']
     })
     //  console.log(result);
 
@@ -76,7 +75,6 @@ const deleteBookById = async (Request, Reply) => {
         id: ids
       }
     });
-   addDeleteBook({id:ids})
     Reply("Done").code(200);
   }
   catch (err) {
@@ -97,7 +95,6 @@ const updateBook = async (Request, Reply) => {
       }
     });
     // await elastic.updateBook(data,id);
-     addUpdateBook({content:data,id})
     Reply("ok").code(200)
   }
   catch (err) {
@@ -110,10 +107,7 @@ const addBook = async (Request, Reply) => {
   try {
     const data = Request.payload;
     console.log(data);
-   const result=await models.books.create(data);
-   const datas={...data,id:result.dataValues.id}
-   addInsertBook(datas)
-  console.log(datas)
+    await models.books.create(data);
     Reply("ok").code(201);
   }
   catch (err) {
@@ -122,4 +116,4 @@ const addBook = async (Request, Reply) => {
   }
 }
 
-module.exports = { allBooks, bookByID, bookByParams, deleteBookById, updateBook, addBook }
+module.exports = { allBooks, bookByID, bookByAdmin, deleteBookById, updateBook, addBook }

@@ -1,5 +1,4 @@
 const handler = require("controllers")
-
 const route = [
   {
   method: "GET",

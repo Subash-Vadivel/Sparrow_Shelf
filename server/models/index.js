@@ -11,7 +11,7 @@ const models = {}
 
 const modelsDir = path.join(__dirname, '.');
 fs.readdirSync(modelsDir).forEach(file => {
-  if(file!=="index.js"){
+  if (file !== "index.js") {
     const model = require(path.join(modelsDir, file))(sequelize, Sequelize.DataTypes);
     models[model.name] = model;
   }
@@ -25,6 +25,13 @@ Object.keys(models).forEach((modelName) => {
   }
 })
 
+const hooksDir = path.join(__dirname, '../hooks');
+// Hooks
+fs.readdirSync(hooksDir).forEach(file => {
+  if (file !== "index.js") {
+    require(path.join(hooksDir, file))(models);
+  }
+});
 
 
 

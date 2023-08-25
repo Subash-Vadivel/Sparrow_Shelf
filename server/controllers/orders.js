@@ -1,6 +1,5 @@
 const models = require("models");
-const {addUpdateBook}=require("utils/bullQueue")
-const elastic=require('utils/elastic')
+const elastic = require("../utils/elastic");
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {
@@ -23,8 +22,6 @@ const placeOrder = async (Request, Reply) => {
 
     //commit
     await t.commit();
-    const data={stock:newStock}
-    addUpdateBook({content:data,id:book_id});    //Bull
     Reply({ Status: true }).code(200);
   }
   catch (err) {
@@ -48,7 +45,6 @@ const orderByUID = async (Request, Reply) => {
       }]
 
     })
-    console.log(result);
     Reply(result[0].orders);
 
   }
@@ -61,9 +57,7 @@ const orderByUID = async (Request, Reply) => {
 const cancelOrderById = async (Request, Reply) => {
   var t = await models.sequelize.transaction();
   try {
-    console.log("Hitting")
     const id = Request.params.id;
-    console.log(id);
     const result = await models.orders.findOne({
       where: {
         id: id
@@ -77,12 +71,10 @@ const cancelOrderById = async (Request, Reply) => {
         },
         transaction: t
       })
-      const newStock=result.quantity+result1.stock;
-      await result1.increment('stock', { by: result.quantity, transaction: t });
+      const newStock = result.quantity + result1.stock;
+      await result1.update({ stock: newStock }, { transaction: t });
       await result.destroy({ transaction: t });
       t.commit();
-    const data={stock:newStock}
-    addUpdateBook({content:data,id:result.book_id});
       return Reply({ status: true }).code(200);
     }
     Reply({ status: false }).code(200);
@@ -97,7 +89,14 @@ const cancelOrderById = async (Request, Reply) => {
 
 const allOrders = async (Request, Reply) => {
   try {
-    const result = await models.orders.findAll({});
+    const result = await models.orders.findAll({
+      include: [{
+        model: models.user
+      }, {
+        model: models.books
+      }]
+    });
+    console.log(result[0].dataValues);
     Reply(result).code(200);
 
   }
@@ -111,11 +110,12 @@ const updateOrder = async (Request, Reply) => {
   try {
     const data = Request.payload.data;
     const id = Request.params.id;
-    const result = await models.orders.update(data, {
+    await models.orders.update(data, {
       where: {
         id: id
       }
     });
+    await elastic.updateOrder(data, id);
     Reply("ok").code(200);
 
   }

@@ -16,8 +16,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
 
 function Header(props) {
-  const[error,setError]=useState('');
+  const [error, setError] = useState('');
   const [book, setBook] = useState(null);
+  const [name, setName] = useState('');
   const [isOpen, setOpen] = useState(false);
   const [isLogin, setLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -40,12 +41,12 @@ function Header(props) {
     e.preventDefault();
     try {
       if (book) {
-        const result = await axiosPrivate.get(`/books?book=${book}`);
-        props.setData(result.data);
+        props.setSearch(book);
+
       }
       else {
 
-        const result = await axiosPrivate.get("/books");
+        const result = await axiosPrivate.get("/books?page=0");
         props.setData(result.data);
       }
     }
@@ -56,13 +57,11 @@ function Header(props) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      if(!email || !password)
-      {
+      if (!email || !password) {
         setError("Missing Data");
         return;
       }
-      else if(password.length<8)
-      {
+      else if (password.length < 8) {
         setError("Invalid Password")
         return;
       }
@@ -72,13 +71,13 @@ function Header(props) {
       setEmail('');
       setPassword('');
       setError('');
-      if(result.data.isadmin)
-         navigate('/admin');
+      if (result.data.isadmin)
+        navigate('/admin');
       setOpen(false);
     }
     catch (err) {
-      if(err.response.status===409){
-         setError("Invalid Credential")
+      if (err.response.status === 409) {
+        setError("Invalid Credential")
       };
     }
   }
@@ -86,17 +85,18 @@ function Header(props) {
   const handleSign = async (e) => {
     e.preventDefault();
     try {
-      await axiosPrivate.post('/signup', { email, password });
+      await axiosPrivate.post('/signup', { email, password, user_name: name });
       setLogin(true);
     }
     catch (err) {
+      console.log(err);
       alert("failed");
     }
   }
   return (
     <><Popup
       open={isOpen}
-      onClose={() => {setOpen(false);setError('');setEmail('');setPassword('')}}
+      onClose={() => { setOpen(false); setError(''); setEmail(''); setPassword('') }}
       position="center"
       className='login-popup'
     >
@@ -106,8 +106,8 @@ function Header(props) {
             <Form.Label column sm={2} md={4}>
               Email
             </Form.Label>
-            <Col sm={10} md={8}> 
-              <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"  />
+            <Col sm={10} md={8}>
+              <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
             </Col>
           </Form.Group>
 
@@ -119,7 +119,7 @@ function Header(props) {
             <Col sm={10} md={8}>
               <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
             </Col>
-            <p style={{color:"red",textAlign:'center'}}>{error}</p>
+            <p style={{ color: "red", textAlign: 'center' }}>{error}</p>
           </Form.Group>
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalCheck" >
             <Col className="d-flex justify-content-end">
@@ -142,6 +142,14 @@ function Header(props) {
             </Form.Label>
             <Col sm={10} md={8}>
               <Form.Control type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3" controlId="formHorizontalName">
+            <Form.Label column sm={2} md={4}>
+              Name
+            </Form.Label>
+            <Col sm={10} md={8}>
+              <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
             </Col>
           </Form.Group>
 
@@ -188,23 +196,23 @@ function Header(props) {
                 navbarScroll
               >
 
-                {!user?
-                <>                
-                <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
-                <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link>
-                </>
-                : 
-                (!details.isadmin?<>
-                  <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
-                  <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link></>:
-                <>
-                <Nav.Link onClick={() => navigate("/admin")}>Dashboard</Nav.Link>
-                <Nav.Link onClick={() => navigate("/admin/inventory")}>Inventory</Nav.Link>
-                <Nav.Link onClick={() => navigate("/admin/view-order")}>View Orders</Nav.Link>
+                {!user ?
+                  <>
+                    <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
+                    <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link>
+                  </>
+                  :
+                  (!details.isadmin ? <>
+                    <Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
+                    <Nav.Link onClick={() => navigate("/book")}>Books</Nav.Link></> :
+                    <>
+                      <Nav.Link onClick={() => navigate("/admin")}>Dashboard</Nav.Link>
+                      <Nav.Link onClick={() => navigate("/admin/inventory")}>Inventory</Nav.Link>
+                      <Nav.Link onClick={() => navigate("/admin/view-order")}>View Orders</Nav.Link>
 
-                </>
+                    </>
                   )}
-     
+
                 {user && !details.isadmin &&
                   <> <Nav.Link onClick={() => navigate("/order")}>Orders</Nav.Link>
                     <Nav.Link onClick={() => navigate("/cart")} className='cart-link'>Cart<span className="cart-count">{data.length}</span></Nav.Link>
@@ -214,20 +222,20 @@ function Header(props) {
 
               <Nav className="justify-content-end my-2 my-lg-3">
 
-               { currentPath==='/book'?
-                <Form className="d-flex">
-                  <Form.Control
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    aria-label="Search"
-                    value={book} onChange={(e) => setBook(e.target.value)}
-                  />
-                  <div className="d-flex gap-2">
-                    <Button variant="outline-success" onClick={search}>Search</Button>
+                {currentPath === '/book' ?
+                  <Form className="d-flex">
+                    <Form.Control
+                      type="search"
+                      placeholder="Search"
+                      className="me-2"
+                      aria-label="Search"
+                      value={book} onChange={(e) => setBook(e.target.value)}
+                    />
+                    <div className="d-flex gap-2">
+                      <Button variant="outline-success" onClick={search}>Search</Button>
 
-                  </div>
-                </Form>:<></>}
+                    </div>
+                  </Form> : <></>}
 
                 <div style={{ marginLeft: '5px' }}>
                   {user ?

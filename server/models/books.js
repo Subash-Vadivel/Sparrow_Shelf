@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const Books = sequelize.define("books", {
     id: {
@@ -25,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     }]
   })
 
+
   Books.associate = models => {
 
     Books.hasMany(models.cart, {
@@ -32,7 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         name: "book_id"
       }
     })
-
+    Books.hasMany(models.orders, {
+      foreignKey: {
+        name: "book_id"
+      }
+    })
 
   };
 
