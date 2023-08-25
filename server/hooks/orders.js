@@ -1,4 +1,3 @@
-const models = require("models")
 const helper = require("helpers");
 
 
@@ -6,10 +5,23 @@ const helper = require("helpers");
 //   helper.orderIndexHelper.addUpdateOrder({ content: { status: order.status }, id: order.id })
 // });
 
-models.orders.afterDestroy(async (order, options) => {
-  helper.orderIndexHelper.addDeleteOrder({ id: order.id })
-});
 
-models.orders.afterCreate(async (order, options) => {
-  helper.orderIndexHelper.addInsertOrder({ book_id: order.book_id, user_id: order.user_id, quantity: order.quantity, amount: order.amount, status: order.status, id: order.id })
-});
+// const destroy = async (order, options) => {
+//   helper.orderIndexHelper.addDeleteOrder({ id: order.id })
+// }
+
+// const create = async (order, options) => {
+//   helper.orderIndexHelper.addInsertOrder({ book_id: order.book_id, user_id: order.user_id, quantity: order.quantity, amount: order.amount, status: order.status, id: order.id })
+
+// }
+
+module.exports = (models) => {
+
+  models.orders.afterDestroy(async (order, options) => {
+    helper.orderIndexHelper.addDeleteOrder({ id: order.id })
+  });
+
+  models.orders.afterCreate(async (order, options) => {
+    helper.orderIndexHelper.addInsertOrder({ book_id: order.book_id, user_id: order.user_id, quantity: order.quantity, amount: order.amount, status: order.status, id: order.id })
+  });
+}
