@@ -10,4 +10,13 @@ const orderStatus = async (Request, Reply) => {
     Reply("Internal Error").code(500);
   }
 }
-module.exports = { orderStatus }
+const bookSales = async (Request, Reply) => {
+  try {
+    const data = helper.analyticHelper.runBookSalesStatus();
+    Reply(data);
+  } catch (err) {
+    console.log(err);
+    Reply("Internal Error").code(500);
+  }
+}
+module.exports = { orderStatus, bookSales }

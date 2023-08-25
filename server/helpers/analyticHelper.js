@@ -28,5 +28,39 @@ async function runOrderStatus() {
     console.error(error);
   }
 }
+async function runBookSalesStatus() {
+  try {
+    const response = await client.search({
+      index: 'orders',
+      body:
+      {
+        size: 0,
+        aggs: {
+          top_books: {
+            terms: {
+              field: "book_id",
+              size: 7,
+              order: {
+                total_amount: "desc"
+              }
+            },
+            aggs: {
+              total_amount: {
+                sum: {
+                  field: "amount"
+                }
+              }
+            }
+          }
+        }
+      }
+    })
 
-module.exports = { runOrderStatus }
+    return (response.aggregations.top_books.buckets);
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
+
+module.exports = { runOrderStatus, runBookSalesStatus }
