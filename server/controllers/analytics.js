@@ -4,7 +4,6 @@ const helper = require("helpers");
 const orderStatus = async (Request, Reply) => {
   try {
     const data = helper.analyticHelper.runOrderStatus();
-
     Reply(data);
   }
   catch (err) {

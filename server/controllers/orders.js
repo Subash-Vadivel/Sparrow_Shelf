@@ -58,9 +58,7 @@ const orderByUID = async (Request, Reply) => {
 const cancelOrderById = async (Request, Reply) => {
   var t = await models.sequelize.transaction();
   try {
-    console.log("Hitting")
     const id = Request.params.id;
-    console.log(id);
     const result = await models.orders.findOne({
       where: {
         id: id
