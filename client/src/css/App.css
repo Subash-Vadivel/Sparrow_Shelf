@@ -96,3 +96,42 @@
   justify-content: center;
   text-align: center;
 }
+
+.wrapped-img{
+  width: 18rem;
+  height: 180px;
+  margin-top: 10px;
+  object-fit: contain;
+  align-items: center;
+  text-align: center;
+}
+.wrapped-img-order{
+  width: 100%;
+  height: 180px;
+  margin-top: 10px;
+  object-fit: contain;
+  align-items: center;
+  text-align: center;
+}
+.wrapper{
+  width: 100px;
+  height: 150px;
+}
+
+.user-name{
+  text-align: center;
+  vertical-align: middle;
+  padding: 5px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.filter-order{
+  background-color:rgb(17, 183, 130);
+  text-align: center;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}

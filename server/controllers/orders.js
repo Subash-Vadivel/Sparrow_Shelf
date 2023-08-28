@@ -41,7 +41,8 @@ const orderByUID = async (Request, Reply) => {
         id: id
       },
       include: [{
-        model: models.orders
+        model: models.orders,
+        include: { model: models.books }
       }]
 
     })

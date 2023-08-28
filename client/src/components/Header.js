@@ -235,11 +235,12 @@ function Header(props) {
                       <Button variant="outline-success" onClick={search}>Search</Button>
 
                     </div>
-                  </Form> : <></>}
+                  </Form> : <><p className='user-name'>👨🏻‍💼 {details.user_name}</p></>}
 
                 <div style={{ marginLeft: '5px' }}>
                   {user ?
-                    <Button variant="danger" onClick={(e) => { e.preventDefault(); dispatch(logout()); navigate('/') }}>Logout</Button> :
+                    <>
+                      <Button variant="danger" onClick={(e) => { e.preventDefault(); dispatch(logout()); navigate('/') }}>Logout</Button> </> :
                     <Button variant="success" onClick={() => {
                       setOpen(true);
                     }}>Login</Button>
