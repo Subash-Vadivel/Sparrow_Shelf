@@ -1,6 +1,5 @@
 const { Client } = require('elasticsearch');
 const client = new Client({ node: 'http://localhost:9200', apiVersion: '6.8' });
-
 console.log("---------------------------------------------")
 // Create an index
 async function createIndexBook() {
@@ -183,6 +182,7 @@ async function insertOrder(data) {
         status: data.status
       },
     });
+
     console.log("Added Order ID : " + data.id);
 
   } catch (error) {
@@ -201,6 +201,7 @@ async function updateOrder(data, id) {
       },
     });
     console.log("Updated Order : " + id);
+
   } catch (error) {
     console.error(error);
   }
@@ -212,6 +213,7 @@ async function deleteOrder(id) {
       type: '_doc',
       id: id
     });
+
   }
   catch (err) {
     console.log(err);

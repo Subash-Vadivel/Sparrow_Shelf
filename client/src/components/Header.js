@@ -235,7 +235,7 @@ function Header(props) {
                       <Button variant="outline-success" onClick={search}>Search</Button>
 
                     </div>
-                  </Form> : <><p className='user-name'>👨🏻‍💼 {details.user_name}</p></>}
+                  </Form> : <>{user && <p className='user-name'>👨🏻‍💼 {details.user_name}</p>}</>}
 
                 <div style={{ marginLeft: '5px' }}>
                   {user ?

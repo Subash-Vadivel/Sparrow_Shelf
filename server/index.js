@@ -3,8 +3,9 @@ const Hapi = require("hapi")
 const route = require("route")
 const models = require("models");
 const SocketIO = require('socket.io');
-const helper = require("helpers");
+const websocket = require("utils/websocket")
 const configStrategy = require("utils/configStrategy");
+const watcher = require("utils/watcher");
 // const sync = require("utils/sync")
 async function syncModels() {
   try {
@@ -72,7 +73,7 @@ async function registerRoute() {
     });
 
 
-    websocket();
+    webSocketConnection();
     mainserver.start((err) => {
       if (err)
         return console.log("Server Failed to Start");
@@ -91,7 +92,7 @@ async function registerRoute() {
 registerRoute();
 
 
-const websocket = () => {
+const webSocketConnection = () => {
   mainserver.connection({
     labels: ["web"],
     port: 8082,
@@ -109,39 +110,7 @@ const websocket = () => {
   });
   io.on('connection', (socket) => {
 
-    //On
-    socket.on("orderStatus", async () => {
-      const data = await helper.analyticHelper.runOrderStatus();
-      socket.emit("orderStatusResponse", data);
-    });
-
-    socket.on("bookSales", async () => {
-      try {
-        const data = await helper.analyticHelper.runBookSalesStatus();
-        console.log(data);
-        const bookids = data.map((item) => item.key);
-        const books = await models.books.findAll({
-          where: {
-            id: bookids
-          }, attributes: ['id', 'price', 'stock', 'book_name']
-        });
-        const combinedData = books.map((book) => {
-          const matching = data.find((countItem) => countItem.key === book.id);
-          return {
-            ...book.get(),
-            count: matching ? matching.doc_count : 0,
-            amount: matching ? matching.total_amount.value : 0
-          };
-        });
-        socket.emit("booksSalesResponse", combinedData);
-
-
-      } catch (err) {
-        console.log(err);
-        socket.emit("bookSalesResponse", []);
-      }
-
-    })
+    websocket.setSocket(socket);
 
 
     //Emits

@@ -1,7 +1,7 @@
 const handler = require("controllers")
 
 const route = [{
-  method: "GET",
+  method: "POST",
   path: "/analytics/orderstatus",
   config: {
     handler: handler.analytics.orderStatus

@@ -1,8 +1,11 @@
 const models = require("models");
 const helper = require("helpers");
+const websocket = require("utils/websocket");
 const orderStatus = async (Request, Reply) => {
   try {
-    const data = helper.analyticHelper.runOrderStatus();
+    console.log("Hitting");
+    const data = await helper.analyticHelper.runOrderStatus();
+    websocket.changesInOrder();
     Reply(data);
   }
   catch (err) {
