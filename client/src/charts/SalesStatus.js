@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-
-import axiosPrivate from '../utils/axiosPrivate';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 export default function SalesStatus(props) {
   const [data, setData] = useState([]);
-  const rawload = async () => {
+  const load = async () => {
     try {
       const filter = props.data.map((item) => {
         return {
@@ -22,7 +19,7 @@ export default function SalesStatus(props) {
     }
   }
   useEffect(() => {
-    rawload();
+    load();
   }, [props.data])
   return (
     <>

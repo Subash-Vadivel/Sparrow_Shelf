@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
-import axiosPrivate from "../utils/axiosPrivate";
+import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import { Col, Container, Row } from "react-bootstrap";
 
 
@@ -36,7 +35,7 @@ export default function PieCharts(props) {
     )
   }
 
-  const rawload = async () => {
+  const load = async () => {
     try {
 
       const filter1 = props.data.map((item) => {
@@ -61,7 +60,7 @@ export default function PieCharts(props) {
     }
   }
   useEffect(() => {
-    rawload();
+    load();
   }, [props.data])
 
   return (
