@@ -1,4 +1,3 @@
-const elastic = require('utils/elastic')
 const models = require("models");
 const helper = require("helpers");
 const orderStatus = async (Request, Reply) => {

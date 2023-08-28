@@ -7,7 +7,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export default function PieCharts() {
+export default function PieCharts(props) {
   const [data1, setData1] = useState([]);
   const [data2, setData2] = useState([]);
 
@@ -36,25 +36,23 @@ export default function PieCharts() {
     )
   }
 
-  const load = async () => {
+  const rawload = async () => {
     try {
-      const result = await axiosPrivate.get("/analytics/orderstatus");
 
-      const filter1 = result.data.map((item) => {
+      const filter1 = props.data.map((item) => {
         return {
           name: item.key,
           value: item.value.value
         }
 
       })
-      const filter2 = result.data.map((item) => {
+      const filter2 = props.data.map((item) => {
         return {
           name: item.key,
           value: item.doc_count
         }
 
       })
-      console.log(filter1);
       setData1(filter1);
       setData2(filter2);
     }
@@ -63,8 +61,8 @@ export default function PieCharts() {
     }
   }
   useEffect(() => {
-    load();
-  }, [])
+    rawload();
+  }, [props.data])
 
   return (
     <>

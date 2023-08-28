@@ -4,7 +4,7 @@ const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
     const page = Request.query.page;
-    console.log(book);
+    console.log(page);
     if (book) {
       const bookids = await elastic.searchBook(book, page);
       const books = await models.books.findAll({

@@ -4,12 +4,11 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 
 
 import axiosPrivate from '../utils/axiosPrivate';
-export default function SalesStatus() {
+export default function SalesStatus(props) {
   const [data, setData] = useState([]);
-  const load = async () => {
+  const rawload = async () => {
     try {
-      const result = await axiosPrivate.get("/analytics/salesstatus");
-      const filter = result.data.map((item) => {
+      const filter = props.data.map((item) => {
         return {
           name: item.book_name,
           amount: item.amount,
@@ -23,8 +22,8 @@ export default function SalesStatus() {
     }
   }
   useEffect(() => {
-    load();
-  }, [])
+    rawload();
+  }, [props.data])
   return (
     <>
       <Container>
