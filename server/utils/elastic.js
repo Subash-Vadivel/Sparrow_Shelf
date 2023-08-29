@@ -182,7 +182,6 @@ async function insertOrder(data) {
         status: data.status
       },
     });
-
     console.log("Added Order ID : " + data.id);
 
   } catch (error) {

@@ -5,7 +5,7 @@ const models = require("models");
 const SocketIO = require('socket.io');
 const websocket = require("utils/websocket")
 const configStrategy = require("utils/configStrategy");
-const watcher = require("utils/watcher");
+// const watcher = require("utils/watcher");
 // const sync = require("utils/sync")
 async function syncModels() {
   try {

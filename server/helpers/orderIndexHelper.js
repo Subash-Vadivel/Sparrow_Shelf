@@ -4,7 +4,18 @@ const elastic = require('utils/elastic')
 const updateOrder = new Bull('Order_Update');
 const deleteOrder = new Bull("Order_Delete");
 const addOrder = new Bull("Order_Add");
+const axios = require("axios");
 
+
+const updateDashBoard = async () => {
+  try {
+    axios.get("http://localhost:8080/analytics/orderstatus")
+
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
 
 const options = {
   attempts: 2,
@@ -15,7 +26,9 @@ const addUpdateOrder = (data) => {
   updateOrder.add(data, options)
 }
 updateOrder.process(async (job) => {
-  return await elastic.updateOrder(job.data.content, job.data.id);
+  await elastic.updateOrder(job.data.content, job.data.id);
+  updateDashBoard();
+  return;
 
 })
 updateOrder.on('completed', (job) => {
@@ -28,7 +41,10 @@ const addDeleteOrder = (data) => {
 }
 deleteOrder.process(async (job) => {
 
-  return await elastic.deleteOrder(job.data.id)
+  await elastic.deleteOrder(job.data.id)
+  updateDashBoard();
+  return
+
 
 })
 deleteOrder.on('completed', (job) => {
@@ -39,10 +55,12 @@ const addInsertOrder = (data) => {
   addOrder.add(data, options);
 }
 addOrder.process(async (job) => {
-  return await elastic.insertOrder(job.data)
+  await elastic.insertOrder(job.data)
+  updateDashBoard();
+  return;
 })
 
-addOrder.on('completed', (job) => {
+addOrder.on('completed', async (job) => {
   console.log("Added New Order to ES !!!")
 })
 

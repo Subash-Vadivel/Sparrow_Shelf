@@ -3,10 +3,9 @@ const helper = require("helpers");
 const websocket = require("utils/websocket");
 const orderStatus = async (Request, Reply) => {
   try {
-    console.log("Hitting");
-    const data = await helper.analyticHelper.runOrderStatus();
+    console.log("Reload Orders");
     websocket.changesInOrder();
-    Reply(data);
+    Reply("done");
   }
   catch (err) {
     console.log(err);
@@ -15,24 +14,9 @@ const orderStatus = async (Request, Reply) => {
 }
 const bookSales = async (Request, Reply) => {
   try {
-    const data = await helper.analyticHelper.runBookSalesStatus();
-    console.log(data);
-    const bookids = data.map((item) => item.key);
-    const books = await models.books.findAll({
-      where: {
-        id: bookids
-      }, attributes: ['id', 'price', 'stock', 'book_name']
-    });
-    const combinedData = books.map((book) => {
-      const matching = data.find((countItem) => countItem.key === book.id);
-      return {
-        ...book.get(),
-        count: matching ? matching.doc_count : 0,
-        amount: matching ? matching.total_amount.value : 0
-      };
-    });
-
-    Reply(combinedData);
+    console.log("Reload Books")
+    websocket.changesInBooks();
+    Reply("ok");
   } catch (err) {
     console.log(err);
     Reply("Internal Error").code(500);
