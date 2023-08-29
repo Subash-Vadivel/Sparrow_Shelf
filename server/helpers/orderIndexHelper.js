@@ -8,13 +8,16 @@ const axios = require("axios");
 
 
 const updateDashBoard = async () => {
-  try {
-    axios.get("http://localhost:8080/analytics/orderstatus")
-
-  }
-  catch (err) {
-    console.log(err);
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      await axios.get("http://localhost:8080/analytics/orderstatus");
+      resolve();
+    }
+    catch (err) {
+      console.log(err);
+      reject();
+    }
+  })
 }
 
 const options = {
@@ -27,12 +30,13 @@ const addUpdateOrder = (data) => {
 }
 updateOrder.process(async (job) => {
   await elastic.updateOrder(job.data.content, job.data.id);
-  updateDashBoard();
+  await updateDashBoard();
   return;
 
 })
 updateOrder.on('completed', (job) => {
   console.log("Job Completed Updated Order");
+
 })
 
 
@@ -42,13 +46,14 @@ const addDeleteOrder = (data) => {
 deleteOrder.process(async (job) => {
 
   await elastic.deleteOrder(job.data.id)
-  updateDashBoard();
+  await updateDashBoard();
   return
 
 
 })
 deleteOrder.on('completed', (job) => {
   console.log("Job Completed Order Deleted")
+
 })
 
 const addInsertOrder = (data) => {
@@ -56,12 +61,13 @@ const addInsertOrder = (data) => {
 }
 addOrder.process(async (job) => {
   await elastic.insertOrder(job.data)
-  updateDashBoard();
+  await updateDashBoard();
   return;
 })
 
 addOrder.on('completed', async (job) => {
   console.log("Added New Order to ES !!!")
+
 })
 
 module.exports = { addDeleteOrder, addInsertOrder, addUpdateOrder }

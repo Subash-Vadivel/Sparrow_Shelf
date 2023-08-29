@@ -1,3 +1,4 @@
+const { resolve, reject } = require('bluebird');
 const { Client } = require('elasticsearch');
 const client = new Client({ node: 'http://localhost:9200', apiVersion: '6.8' });
 console.log("---------------------------------------------")
@@ -77,53 +78,65 @@ async function deleteDocument() {
 // Update a document
 
 async function insertBook(data) {
-  try {
-    await client.index({
-      index: 'books',
-      id: data.id,
-      type: '_doc',
-      body: {
-        book_name: data.book_name,
-        stock: data.stock,
-        price: data.price
-      },
-    });
-    console.log("Added Book ID : " + data.id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      await client.index({
+        index: 'books',
+        id: data.id,
+        type: '_doc',
+        body: {
+          book_name: data.book_name,
+          stock: data.stock,
+          price: data.price
+        },
+      });
+      console.log("Added Book ID : " + data.id);
 
-  } catch (error) {
-    console.error(error);
-  }
+    } catch (error) {
+      console.error(error);
+    }
+  })
+
 }
 
 async function deleteBook(id) {
-  try {
-    await client.delete({
-      index: 'books',
-      type: '_doc',
-      id: id
-    });
-  }
-  catch (err) {
-    console.log(err);
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      await client.delete({
+        index: 'books',
+        type: '_doc',
+        id: id
+      });
+      resolve()
+    }
+    catch (err) {
+      console.log(err);
+      reject()
+    }
+  })
+
 
 }
 
 async function updateBook(data, id) {
-  try {
-    await client.update({
-      index: 'books',
-      type: '_doc',
-      id: id,
-      body: {
-        doc: data,
-        doc_as_upsert: true
-      },
-    });
-    console.log("Updated Book : " + id);
-  } catch (error) {
-    console.error(error);
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      await client.update({
+        index: 'books',
+        type: '_doc',
+        id: id,
+        body: {
+          doc: data,
+          doc_as_upsert: true
+        },
+      });
+      console.log("Updated Book : " + id);
+    } catch (error) {
+      console.error(error);
+    }
+
+  })
+
 }
 
 async function searchBook(searchString, page) {
@@ -169,54 +182,69 @@ async function searchAllBook(page) {
   }
 }
 async function insertOrder(data) {
-  try {
-    await client.index({
-      index: 'orders',
-      id: data.id,
-      type: '_doc',
-      body: {
-        book_id: data.book_id,
-        user_id: data.user_id,
-        amount: data.amount,
-        quantity: data.quantity,
-        status: data.status
-      },
-    });
-    console.log("Added Order ID : " + data.id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      await client.index({
+        index: 'orders',
+        id: data.id,
+        type: '_doc',
+        body: {
+          book_id: data.book_id,
+          user_id: data.user_id,
+          amount: data.amount,
+          quantity: data.quantity,
+          status: data.status
+        },
+      });
+      console.log("Added Order ID : " + data.id);
+      resolve();
 
-  } catch (error) {
-    console.error(error);
-  }
+    } catch (error) {
+      console.error(error);
+      reject();
+    }
+  })
+
 }
 async function updateOrder(data, id) {
-  try {
-    await client.update({
-      index: 'orders',
-      type: '_doc',
-      id: id,
-      body: {
-        doc: data,
-        doc_as_upsert: true
-      },
-    });
-    console.log("Updated Order : " + id);
+  return new Promise(async (resolve, reject) => {
+    try {
+      await client.update({
+        index: 'orders',
+        type: '_doc',
+        id: id,
+        body: {
+          doc: data,
+          doc_as_upsert: true
+        },
+      });
+      console.log("Updated Order : " + id);
+      resolve();
 
-  } catch (error) {
-    console.error(error);
-  }
+    } catch (error) {
+      console.error(error);
+      reject();
+    }
+  })
+
 }
 async function deleteOrder(id) {
-  try {
-    await client.delete({
-      index: 'orders',
-      type: '_doc',
-      id: id
-    });
+  return new Promise(async (resolve, reject) => {
 
-  }
-  catch (err) {
-    console.log(err);
-  }
+    try {
+      await client.delete({
+        index: 'orders',
+        type: '_doc',
+        id: id
+      });
+      resolve();
+
+    }
+    catch (err) {
+      console.log(err);
+      reject();
+    }
+  })
 
 }
 const elastic = { client, insertBook, searchBook, searchAllBook, deleteBook, updateBook, insertOrder, updateOrder, deleteOrder }

@@ -7,13 +7,18 @@ const addBook = new Bull("Book_Add");
 
 const axios = require("axios");
 
-const updateDashBoard = async () => {
-  try {
-    await axios.get("http://localhost:8080/analytics/salesstatus");
-  }
-  catch (err) {
-    console.log(err);
-  }
+const updateDashBoard = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await axios.get("http://localhost:8080/analytics/salesstatus");
+      resolve();
+    }
+    catch (err) {
+      console.log(err);
+      reject();
+    }
+
+  })
 }
 
 
@@ -27,8 +32,8 @@ const addUpdateBook = (data) => {
 }
 updateBook.process(async (job) => {
   await elastic.updateBook(job.data.content, job.data.id);
-
-  return await updateDashBoard()
+  await updateDashBoard()
+  return
 
 })
 updateBook.on('completed', (job) => {
@@ -43,8 +48,8 @@ deleteBook.process(async (job) => {
   job.data.id.map(async (id) => {
     await elastic.deleteBook(id)
   })
-
-  return await updateDashBoard()
+  await updateDashBoard()
+  return
 })
 deleteBook.on('completed', (job) => {
   console.log("Job Completed Book Deleted")
@@ -56,7 +61,8 @@ const addInsertBook = (data) => {
 addBook.process(async (job) => {
 
   await elastic.insertBook(job.data)
-  return await updateDashBoard()
+  await updateDashBoard()
+  return
 })
 
 addBook.on('completed', (job) => {

@@ -1,4 +1,5 @@
 const models = require("models");
+const websocket = require("utils/websocket");
 const elastic = require("../utils/elastic");
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
@@ -117,6 +118,8 @@ const updateOrder = async (Request, Reply) => {
       }
     });
     await elastic.updateOrder(data, id);
+    websocket.changesInOrder();
+
     Reply("ok").code(200);
 
   }
