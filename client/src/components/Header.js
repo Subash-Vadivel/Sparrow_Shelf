@@ -33,7 +33,6 @@ function Header(props) {
   useEffect(() => {
     if (user && details) {
       dispatch(cartData(details.id));
-
     }
   }, [])
 

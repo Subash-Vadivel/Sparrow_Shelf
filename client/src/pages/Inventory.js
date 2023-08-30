@@ -11,10 +11,10 @@ export default function Inventory() {
   const [book_name, setBookName] = useState('');
   const [stock, setStock] = useState(1);
   const [price, setPrice] = useState(0);
-
   const [addData, setAddData] = useState(false);
   const [status, setstatus] = useState(false)
   const [data, setData] = useState([]);
+
   const load = async () => {
     try {
       const result = await axiosPrivate.get('/books/admin/');
@@ -48,7 +48,6 @@ export default function Inventory() {
   const onAfterSaveCell = async (row, cellName, cellValue) => {
     try {
       await axiosPrivate.put(`/updatebook/${row.id}`, { data: { [cellName]: cellValue } });
-      // console.log('Updating', row.id, cellName, cellValue);
       const updatedData = data.map(item =>
         item.id === row.id ? { ...item, [cellName]: cellValue } : item
       );
@@ -63,10 +62,7 @@ export default function Inventory() {
     const selectedRows = data.filter(row => row.isSelected);
     const idsToDelete = selectedRows.map(row => row.id);
     try {
-      // Perform your delete action here
       await axiosPrivate.post('/books/all', { ids: idsToDelete });
-      // console.log('Deleting IDs:', idsToDelete);
-      load(); // Reload the data after deletion
     } catch (err) {
       console.log(err);
     }
