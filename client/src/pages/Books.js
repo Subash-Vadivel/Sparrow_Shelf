@@ -25,8 +25,8 @@ export default function Books() {
 
   const [search, setSearch] = useState('');
   const [data, setData] = useState(null);
-  const [isOpen, setOpen] = useState(false);
-  const [start, setStart] = useState(0);
+  const [popUp, setPopUp] = useState(false);
+  const [currentPage, setcurrentPage] = useState(0);
   const [item, setItem] = useState(0);
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
@@ -37,20 +37,19 @@ export default function Books() {
 
 
   useEffect(() => {
-    console.log("Loading")
     load();
-  }, [start, search])
+  }, [currentPage, search])
 
 
 
   const load = async () => {
     try {
       if (search) {
-        const result = await axiosPrivate.get(`/books?book=${search}&page=${start}`);
+        const result = await axiosPrivate.get(`/books?book=${search}&page=${currentPage}`);
         setData(result.data)
       }
       else {
-        const result = await axiosPrivate.get(`/books?page=${start}`);
+        const result = await axiosPrivate.get(`/books?page=${currentPage}`);
         setData(result.data);
       }
     }
@@ -58,9 +57,6 @@ export default function Books() {
       console.log(err);
     }
   }
-  useEffect(() => {
-    load();
-  }, [])
 
   const addToCart = async (e, price, id) => {
     e.preventDefault();
@@ -96,7 +92,7 @@ export default function Books() {
         book_id: order.id, user_id: details.id, amount: qty * order.price, quantity: qty
       })
       setOrder(false);
-      setOpen(false);
+      setPopUp(false);
       load();
       alert("Order Placed");
     }
@@ -120,12 +116,16 @@ export default function Books() {
     findItem();
   }, [item])
 
+  if (!data) {
+    return <Loading />
+  }
+
   return (
     <>
       <Header setData={setData} setSearch={setSearch} />
       <Popup
-        open={isOpen}
-        onClose={() => { setQty(1); setOpen(false); setOrder(false); setItem(0) }}
+        open={popUp}
+        onClose={() => { setQty(1); setPopUp(false); setOrder(false); setItem(0) }}
         position="center"
         className='login-popup'
       >
@@ -170,10 +170,8 @@ export default function Books() {
               </div>
             </Card>
           </Container> : <Loading />}
-
       </Popup>
-      {!data ? <Loading /> : <>
-
+      <>
         <Container >
           <Row>
             {data.map((item, index) => {
@@ -199,7 +197,7 @@ export default function Books() {
                         alert("You will received a notification on new stock 📦")
                       }
                       else if (user) {
-                        setItem(prev => item.id); setOpen(true);
+                        setItem(prev => item.id); setPopUp(true);
 
                       }
                       else {
@@ -211,27 +209,16 @@ export default function Books() {
               </Col>
               );
             })}
-
-
-
           </Row>
-          {/* For Pagination by Page Number */}
-          {/* <Row>
-            <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
-            </Col>
-            <Col>         {data.length > 0 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
-            </Col>
-          </Row> */}
-
           <Row>
-            <Col>         {start > 0 ? <Button style={{ float: 'right' }} onClick={() => setStart((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+            <Col>         {currentPage > 0 ? <Button style={{ float: 'right' }} onClick={() => setcurrentPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
             </Col>
-            <Col>         {data.length > 0 ? <Button onClick={() => setStart((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+            <Col>         {data.length > 0 ? <Button onClick={() => setcurrentPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
             </Col>
           </Row>
         </Container>
 
-      </>}
+      </>
       <Footer />
     </>
   )

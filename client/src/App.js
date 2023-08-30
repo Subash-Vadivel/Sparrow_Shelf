@@ -21,8 +21,15 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+
           <Route path="/" element={<Home />}>
           </Route>
+
+          <Route path="/home" element={<Home />}>
+          </Route>
+
+          {/* Admin and User has some Restricted Routes based on the User details   */}
+
           {(!details || details.isadmin === false) &&
             <Route path="/book" element={<Books />}></Route>
           }
@@ -32,6 +39,8 @@ function App() {
               <Route path="/order" element={<Orders />}></Route>
             </>
           }
+
+          {/* Nested Routes for Checking admin access of the logged user  */}
 
           <Route path="/admin" element={<LoginRequired><Admin /></LoginRequired>}>
             <Route index element={<Dashboard />}></Route>

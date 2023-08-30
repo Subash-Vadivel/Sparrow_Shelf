@@ -14,7 +14,7 @@ import Popup from "reactjs-popup"
 import Loading from '../components/Loading';
 
 const images = ["https://template.canva.com/EADaopxBna4/1/0/251w-ujD6UPGa9hw.jpg", "https://marketplace.canva.com/EAFersXpW3g/1/0/1003w/canva-blue-and-white-modern-business-book-cover-cfxNJXYre8I.jpg",
-  "https://img.freepik.com/free-psd/book-hardcover-mockup-three-views_125540-226.jpg?w=2000", "https://marketplace.canva.com/EAFh7bSCs1U/1/0/1131w/canva-brown-aesthetic-minimalist-note-book-cover-page-a4-document-yhk3SDUOdz8.jpg",
+  "https://img.freepik.com/free-psd/book-hardcover-mockup-three-views_125540-226.jpg?w=2000", "https://marketplace.canva.com/EAFh7bSCs1U/1/0/1131w/canva-brown-aesthetic-minimalist-note-book-cover-currentPage-a4-document-yhk3SDUOdz8.jpg",
   "https://marketplace.canva.com/EAFioJosrX8/2/0/501w/canva-white-and-orange-modern-business-book-cover-oVHIF1kx9QU.jpg", "https://marketplace.canva.com/EAFfzzUHgHc/1/0/501w/canva-blue-modern-business-book-cover--zGfHn9hrFs.jpg",
   "https://marketplace.canva.com/EAFfz3R6fVM/1/0/1003w/canva-yellow-simple-minimalist-modern-business-solution-book-cover-9dJ1K0aD35k.jpg", "https://marketplace.canva.com/EAFn-A7wxHU/1/0/1003w/canva-blue-minimalist-business-book-cover-d1Z8r9twpoM.jpg",
   "https://marketplace.canva.com/EAFZ8o1S2_Y/1/0/501w/canva-white-blue-modern-business-solution-book-cover-kUQK2W0wjc0.jpg", "https://marketplace.canva.com/EAFWxHVr8aE/1/0/501w/canva-black-white-and-blue-modern-business-solution-book-cover-YYqja9da0BQ.jpg",
@@ -23,11 +23,11 @@ const images = ["https://template.canva.com/EADaopxBna4/1/0/251w-ujD6UPGa9hw.jpg
 
 export default function Cart() {
 
-  const [isOpen, setOpen] = useState(false);
+  const [popUp, setPopUp] = useState(false);
   const [item, setItem] = useState(0);
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
-  const [page, setPage] = useState(0);
+  const [currentPage, setcurrentPage] = useState(0);
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
   const details = useSelector(state => state.auth.details);
@@ -52,7 +52,7 @@ export default function Cart() {
         book_id: order.id, user_id: details.id, amount: qty * order.price, quantity: qty
       })
       setOrder(false);
-      setOpen(false);
+      setPopUp(false);
       load();
       alert("Order Placed");
     }
@@ -72,9 +72,6 @@ export default function Cart() {
       await dispatch(cartData(details.id));
     }
   }
-  useEffect(() => {
-
-  }, [])
 
 
   const findItem = async () => {
@@ -89,11 +86,15 @@ export default function Cart() {
     findItem();
   }, [item])
 
+  if (data.length === 0) {
+    return (<div className='center-img'><img src="https://assets.materialup.com/uploads/66fb8bdf-29db-40a2-996b-60f3192ea7f0/preview.png" alt='loading' /></div>)
+  }
+
   return (
     <>
       <Popup
-        open={isOpen}
-        onClose={() => { setQty(1); setOpen(false); setItem(0) }}
+        open={popUp}
+        onClose={() => { setQty(1); setPopUp(false); setItem(0) }}
         position="center"
         className='login-popup'
       >
@@ -132,20 +133,18 @@ export default function Cart() {
               </div>
               <div style={{ padding: '10px' }}>
                 <div>
-                  <Button variant="danger" onClick={() => { setQty(1); setOpen(false) }}>Close</Button>
+                  <Button variant="danger" onClick={() => { setQty(1); setPopUp(false) }}>Close</Button>
                   <Button variant="success" style={{ float: "right" }} onClick={placeOrder}>Place Order</Button>
                 </div>
               </div>
             </Card>
           </Container> : <Loading />}
-
       </Popup>
-
       <Header />
       <Container>
-        {data.length === 0 ? <div className='center-img'><img src="https://assets.materialup.com/uploads/66fb8bdf-29db-40a2-996b-60f3192ea7f0/preview.png" alt='loading' /></div> : <>
+        <>
           <Row>
-            {data.slice(page * 8, page * 8 + 8).map((item, idx) => {
+            {data.slice(currentPage * 8, currentPage * 8 + 8).map((item, idx) => {
               console.log(item);
               return (
                 <Col style={{ marginBottom: '50px' }} key={idx}>
@@ -172,7 +171,7 @@ export default function Cart() {
                             alert("You will received a notification on new stock 📦")
                           }
                           else if (user) {
-                            setItem(prev => item.book_id); setOpen(true);
+                            setItem(prev => item.book_id); setPopUp(true);
 
                           }
                           else {
@@ -185,15 +184,16 @@ export default function Cart() {
                 </Col>
               );
             })}
+
             <Row>
-              <Col>         {page > 0 ? <Button style={{ float: 'right' }} onClick={() => setPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
+              <Col>         {currentPage > 0 ? <Button style={{ float: 'right' }} onClick={() => setcurrentPage((prev) => prev - 1)} variant='success'>Prev</Button> : ""}
               </Col>
-              <Col>         {data.length > page * 8 + 8 ? <Button onClick={() => setPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
+              <Col>         {data.length > currentPage * 8 + 8 ? <Button onClick={() => setcurrentPage((prev) => prev + 1)} variant='success' style={{ float: "left" }}>Next</Button> : ""}
               </Col>
             </Row>
 
           </Row>
-        </>}
+        </>
       </Container>
       <Footer />
 

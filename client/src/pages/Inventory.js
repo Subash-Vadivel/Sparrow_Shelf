@@ -80,6 +80,10 @@ export default function Inventory() {
     }
   }
 
+  if (!status) {
+    return <Loading />
+  }
+
   return (
     <>
       <Popup
@@ -123,54 +127,48 @@ export default function Inventory() {
               </Col>
             </Form.Group>
           </Form>
-
-
         </Container>
       </Popup>
       <Header />
-      {status ?
-        (
-          <Container >
-            <Row>
-              <Col><h1 className='heading'>Inventory</h1></Col>
-            </Row>
-            <Row>
-              <Col>
-              </Col>
-              <Col>
+      <Container >
+        <Row>
+          <Col><h1 className='heading'>Inventory</h1></Col>
+        </Row>
+        <Row>
+          <Col>
+          </Col>
+          <Col>
+            <Button
+              variant='success'
+              onClick={() => setAddData(true)}
+              className='floatRightBtn'
+            >
+              Add
+            </Button>
+            <Button
+              variant='danger'
+              className='floatRightBtn'
+              onClick={(e) => deleteData(e)}
+            >
+              Delete
+            </Button>
+          </Col>
+        </Row>
+        <Row className='topspace'>
+          <Col>
+            <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true, afterSaveCell: onAfterSaveCell }}
+              selectRow={selectRowProp}
+            >
+              <TableHeaderColumn isKey dataField='id' dataSort={true}>Product ID</TableHeaderColumn>
+              <TableHeaderColumn dataField='book_name'  >Product Name</TableHeaderColumn>
+              <TableHeaderColumn dataField='stock'>Stock</TableHeaderColumn>
+              <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+            </BootstrapTable>
+          </Col>
+        </Row>
+      </Container>
 
-                <Button
-                  variant='success'
-                  onClick={() => setAddData(true)}
-                  className='floatRightBtn'
-                >
-                  Add
-                </Button>
-                <Button
-                  variant='danger'
-                  className='floatRightBtn'
-                  onClick={(e) => deleteData(e)}
-                >
-                  Delete
-                </Button>
-              </Col>
-            </Row>
-            <Row className='topspace'>
-              <Col>
-                <BootstrapTable data={data} striped hover pagination cellEdit={{ mode: 'click', blurToSave: true, afterSaveCell: onAfterSaveCell }}
-                  selectRow={selectRowProp}
-                >
-                  <TableHeaderColumn isKey dataField='id' dataSort={true}>Product ID</TableHeaderColumn>
-                  <TableHeaderColumn dataField='book_name'  >Product Name</TableHeaderColumn>
-                  <TableHeaderColumn dataField='stock'>Stock</TableHeaderColumn>
-                  <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
-                </BootstrapTable>
-              </Col>
-            </Row>
-          </Container>
-        )
-        : (<><Loading /></>)
-      }
+
     </>
   )
 }
