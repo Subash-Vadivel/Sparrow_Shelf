@@ -5,11 +5,9 @@ const updateOrder = new Bull('Order_Update');
 const deleteOrder = new Bull("Order_Delete");
 const addOrder = new Bull("Order_Add");
 
-
 const options = {
   attempts: 2,
 };
-
 
 const addUpdateOrder = (data) => {
   updateOrder.add(data, options)
@@ -22,14 +20,11 @@ updateOrder.on('completed', (job) => {
   console.log("Job Completed Updated Order");
 })
 
-
 const addDeleteOrder = (data) => {
   deleteOrder.add(data, options);
 }
 deleteOrder.process(async (job) => {
-
   return await elastic.deleteOrder(job.data.id)
-
 })
 deleteOrder.on('completed', (job) => {
   console.log("Job Completed Order Deleted")

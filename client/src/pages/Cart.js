@@ -10,7 +10,6 @@ import axiosPrivate from '../utils/axiosPrivate';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
 import Footer from '../components/Footer';
-
 import Popup from "reactjs-popup"
 import Loading from '../components/Loading';
 
@@ -81,7 +80,6 @@ export default function Cart() {
   const findItem = async () => {
     await axiosPrivate.get(`/books/${item}`).then((res) => {
       setOrder(res.data);
-      console.log(res);
     }).catch((err) => {
       console.log(err);
       setOrder(false);

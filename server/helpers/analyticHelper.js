@@ -1,5 +1,6 @@
 const { Client } = require('elasticsearch');
 const client = new Client({ node: 'http://localhost:9200', apiVersion: '6.8' });
+
 async function runOrderStatus() {
   try {
     const response = await client.search({
@@ -28,6 +29,7 @@ async function runOrderStatus() {
     console.error(error);
   }
 }
+
 async function runBookSalesStatus() {
   try {
     const response = await client.search({
@@ -55,7 +57,6 @@ async function runBookSalesStatus() {
         }
       }
     })
-
     return (response.aggregations.top_books.buckets);
   }
   catch (err) {

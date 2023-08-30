@@ -8,38 +8,35 @@ import React from 'react';
 function Courosel() {
   return (
     <Container>
-    <Carousel data-bs-theme="dark">
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src={img1}
-          alt="First slide"
-        />
-        <Carousel.Caption>
-          {/* <h5>it's the place where all starts</h5>
-          <p>Kids can learn with their friends.</p> */}
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src={img2}
+      <Carousel data-bs-theme="dark">
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={img1}
+            alt="First slide"
+          />
+          <Carousel.Caption>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={img2}
             alt="Second slide"
-        />
-        <Carousel.Caption> 
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src={img3}
-          alt="Third slide"
-        />
-        <Carousel.Caption>
-        
-        </Carousel.Caption>
-      </Carousel.Item>
-    </Carousel>
+          />
+          <Carousel.Caption>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={img3}
+            alt="Third slide"
+          />
+          <Carousel.Caption>
+          </Carousel.Caption>
+        </Carousel.Item>
+      </Carousel>
     </Container>
   );
 }

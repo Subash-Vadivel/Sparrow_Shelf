@@ -5,11 +5,9 @@ const updateBook = new Bull('Book_Update');
 const deleteBook = new Bull("Book_Delete");
 const addBook = new Bull("Book_Add");
 
-
 const options = {
   attempts: 2,
 };
-
 
 const addUpdateBook = (data) => {
   updateBook.add(data, options)
@@ -21,7 +19,6 @@ updateBook.process(async (job) => {
 updateBook.on('completed', (job) => {
   console.log("Job Completed Updated Book");
 })
-
 
 const addDeleteBook = (data) => {
   deleteBook.add(data, options);

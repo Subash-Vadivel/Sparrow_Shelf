@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axiosPrivate from '../utils/axiosPrivate';
+
 export default function SalesStatus() {
   const [data, setData] = useState([]);
   const load = async () => {

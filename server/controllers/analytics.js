@@ -1,6 +1,7 @@
 const elastic = require('utils/elastic')
 const models = require("models");
 const helper = require("helpers");
+
 const orderStatus = async (Request, Reply) => {
   try {
     const data = helper.analyticHelper.runOrderStatus();
@@ -11,6 +12,7 @@ const orderStatus = async (Request, Reply) => {
     Reply("Internal Error").code(500);
   }
 }
+
 const bookSales = async (Request, Reply) => {
   try {
     const data = await helper.analyticHelper.runBookSalesStatus();
@@ -36,4 +38,5 @@ const bookSales = async (Request, Reply) => {
     Reply("Internal Error").code(500);
   }
 }
+
 module.exports = { orderStatus, bookSales }

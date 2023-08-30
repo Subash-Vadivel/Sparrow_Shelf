@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
 function Footer() {
-
     const navigate = useNavigate();
+
     return (<>
         <Container className="footerTop">
             <span className="footerTopItem"><img src={logofoot} alt="..." /></span>
@@ -24,7 +24,6 @@ function Footer() {
                         <li>Careers</li>
                         <li>Blog</li>
                         <li>Info</li>
-                        {/* &#38; */}
                     </ul>
                 </Col>
                 <Col md={4} sm={6} xs={12}>

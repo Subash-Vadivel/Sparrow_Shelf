@@ -4,14 +4,12 @@ const models = require('models');
 
 const Queue = new Bull('Mailer');
 
-
 const options = {
   attempts: 2,
 };
 
 const addTaskMail = (data) => {
   Queue.add(data, options);
-
 }
 
 function sendMail(email) {
@@ -49,4 +47,4 @@ Queue.on('completed', (job) => {
   console.log("Job Completed")
 })
 
-module.exports={addTaskMail}
+module.exports = { addTaskMail }

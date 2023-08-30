@@ -8,11 +8,11 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Header from '../components/Header';
 import Popup from "reactjs-popup"
-
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, cartData } from '../redux/actions';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+
 
 const images = ["https://template.canva.com/EADaopxBna4/1/0/251w-ujD6UPGa9hw.jpg", "https://marketplace.canva.com/EAFersXpW3g/1/0/1003w/canva-blue-and-white-modern-business-book-cover-cfxNJXYre8I.jpg",
   "https://img.freepik.com/free-psd/book-hardcover-mockup-three-views_125540-226.jpg?w=2000", "https://marketplace.canva.com/EAFh7bSCs1U/1/0/1131w/canva-brown-aesthetic-minimalist-note-book-cover-page-a4-document-yhk3SDUOdz8.jpg",
@@ -30,13 +30,12 @@ export default function Books() {
   const [item, setItem] = useState(0);
   const [order, setOrder] = useState(false);
   const [qty, setQty] = useState(1);
-
-  const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
   const details = useSelector(state => state.auth.details);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  //  For Pagination Concept
+
   useEffect(() => {
     console.log("Loading")
     load();
@@ -46,7 +45,6 @@ export default function Books() {
 
   const load = async () => {
     try {
-      // const result = await axiosPrivate.get(`/books/page/${start}`);
       if (search) {
         const result = await axiosPrivate.get(`/books?book=${search}&page=${start}`);
         setData(result.data)

@@ -1,5 +1,6 @@
 const models = require("models");
 const elastic = require('utils/elastic')
+
 const allBooks = async (Request, Reply) => {
   try {
     const book = Request.query.book;
@@ -52,8 +53,6 @@ const bookByAdmin = async (Request, Reply) => {
     const result = await models.books.findAll({
       attributes: ['id', 'price', 'stock', 'book_name']
     })
-    //  console.log(result);
-
     Reply(result).code(200);
   }
   catch (err) {
@@ -94,7 +93,6 @@ const updateBook = async (Request, Reply) => {
         id: id
       }
     });
-    // await elastic.updateBook(data,id);
     Reply("ok").code(200)
   }
   catch (err) {

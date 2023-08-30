@@ -3,6 +3,7 @@ const { v4: uuid } = require("uuid")
 const bcrypt = require("bcrypt")
 const redis = require('utils/redisConnection');
 const helper = require('helpers');
+
 const login = async (Request, Reply) => {
   try {
     const { email, password } = Request.payload;
@@ -14,7 +15,6 @@ const login = async (Request, Reply) => {
     })
     if (!hasOne) {
       return Reply("failed").code(409);
-
     }
     const result = await bcrypt.compare(password, hasOne.dataValues.password);
     if (result) {
@@ -26,13 +26,11 @@ const login = async (Request, Reply) => {
       await redis.set(token, hasOne.id);
       Request.cookieAuth.set({ user_id: hasOne.id, token: token });
       return Reply(hasOne.dataValues).code(200)
-
     }
     else
       return Reply("failed").code(409);
   }
   catch (err) {
-    console.log(err);
     Reply("Error").code(500);
   }
 }
@@ -50,14 +48,11 @@ const logout = async (Request, Reply) => {
       if (result)
         await result.destroy();
       await redis.del(data.token);
-
       Request.cookieAuth.clear();
     }
-
     Reply("Logged out")
   }
   catch (err) {
-    console.log(err);
     Reply("Error").code(500);
   }
 }
@@ -75,15 +70,13 @@ const signup = async (Request, Reply) => {
     if (hasOne)
       return Reply("Already Exist").code(400)
 
-    const result = await models.user.create({ email, password: hashPassword, user_name });
+    await models.user.create({ email, password: hashPassword, user_name });
     helper.mailHelper.addTaskMail({ email });
     return Reply("Created").code(201);
-
   }
   catch (err) {
     Reply("Error").code(500);
   }
 }
-
 
 module.exports = { login, signup, logout }

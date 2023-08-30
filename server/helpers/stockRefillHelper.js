@@ -3,12 +3,9 @@ const models = require('models');
 
 const cleanUp = new Bull('Update');
 
-
-
 const options = {
   attempts: 2,
 };
-
 
 function update() {
   return new Promise(async (resolve, reject) => {

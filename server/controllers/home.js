@@ -1,4 +1,3 @@
-const Path = require("path");
 const getApp = (Request, Reply) => {
   try {
     Reply.view('index');

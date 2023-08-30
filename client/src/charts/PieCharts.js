@@ -1,21 +1,16 @@
-
 import React, { useEffect, useState } from "react";
-import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
+import { PieChart, Pie, Tooltip, Cell } from "recharts";
 import axiosPrivate from "../utils/axiosPrivate";
 import { Col, Container, Row } from "react-bootstrap";
 
-
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
 export default function PieCharts() {
   const [data1, setData1] = useState([]);
   const [data2, setData2] = useState([]);
 
-
   const track = () => {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-        {/* Custom Legend */}
         {data1.map((entry, index) => (
           <div
             key={`legend-${index}`}
@@ -39,22 +34,18 @@ export default function PieCharts() {
   const load = async () => {
     try {
       const result = await axiosPrivate.get("/analytics/orderstatus");
-
       const filter1 = result.data.map((item) => {
         return {
           name: item.key,
           value: item.value.value
         }
-
       })
       const filter2 = result.data.map((item) => {
         return {
           name: item.key,
           value: item.doc_count
         }
-
       })
-      console.log(filter1);
       setData1(filter1);
       setData2(filter2);
     }
@@ -98,12 +89,10 @@ export default function PieCharts() {
                 fill="#82ca9d"
                 label
               >
-
                 {data2.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-
               <Tooltip />
             </PieChart>
             {track()}

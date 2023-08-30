@@ -3,10 +3,8 @@ const elastic = require("../utils/elastic");
 const placeOrder = async (Request, Reply) => {
   const t = await models.sequelize.transaction();
   try {
-
-    //saveponit a
     const { book_id, user_id, amount, quantity } = Request.payload;
-    const Result = await models.orders.create({
+    await models.orders.create({
       book_id, user_id, amount, quantity
     }, { transaction: t })
 
@@ -18,16 +16,11 @@ const placeOrder = async (Request, Reply) => {
     });
     const newStock = Result1.stock - quantity;
     await Result1.update({ stock: newStock }, { transaction: t });
-
-
-    //commit
     await t.commit();
     Reply({ Status: true }).code(200);
   }
   catch (err) {
-    //roll back
     await t.rollback();
-    console.log(err);
     Reply("Error").code(500);
   }
 
@@ -83,7 +76,6 @@ const cancelOrderById = async (Request, Reply) => {
   }
   catch (err) {
     t.rollback();
-    console.log(err);
     Reply("Error").code(500);
   }
 }
@@ -97,12 +89,10 @@ const allOrders = async (Request, Reply) => {
         model: models.books
       }]
     });
-    console.log(result[0].dataValues);
     Reply(result).code(200);
 
   }
   catch (err) {
-    console.log(err);
     Reply("Internal Error").code(500);
   }
 }
@@ -121,7 +111,6 @@ const updateOrder = async (Request, Reply) => {
 
   }
   catch (err) {
-    console.log(err);
     Reply("Internal Error").code(500);
   }
 }
