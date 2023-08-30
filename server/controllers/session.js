@@ -40,18 +40,19 @@ const login = async (Request, Reply) => {
 const logout = async (Request, Reply) => {
   try {
     const data = Request.state['ag-47'];
+    if (data) {
+      const result = await models.session.findOne({
+        where: {
+          user_id: data.user_id,
+          token: data.token
+        }
+      })
+      if (result)
+        await result.destroy();
+      await redis.del(data.token);
 
-    const result = await models.session.findOne({
-      where: {
-        user_id: data.user_id,
-        token: data.token
-      }
-    })
-    if (result)
-      await result.destroy();
-    await redis.del(data.token);
-    Request.cookieAuth.clear();
-
+      Request.cookieAuth.clear();
+    }
 
     Reply("Logged out")
   }

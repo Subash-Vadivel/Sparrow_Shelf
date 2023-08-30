@@ -43,8 +43,13 @@ export default function Orders() {
       if (userDetails) {
         const result = await axiosPrivate.get(`/user/${userDetails.id}/order`);
         setData(result.data);
-        setFilterData(result.data);
-        console.log(result.data);
+        if (select) {
+          const applyFilter = result.data.filter((item) => item.status === select);
+          setFilterData(() => applyFilter)
+        }
+        else {
+          setFilterData(result.data)
+        }
       }
     }
     catch (err) {
