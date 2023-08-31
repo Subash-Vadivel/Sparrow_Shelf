@@ -161,7 +161,7 @@ export default function Inventory() {
             >
               <TableHeaderColumn isKey dataField='id' dataSort={true}>Product ID</TableHeaderColumn>
               <TableHeaderColumn dataField='book_name'  >Product Name</TableHeaderColumn>
-              <TableHeaderColumn dataField='stock'>Stock</TableHeaderColumn>
+              <TableHeaderColumn dataField='stock' dataSort={true}>Stock</TableHeaderColumn>
               <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
             </BootstrapTable>
           </Col>

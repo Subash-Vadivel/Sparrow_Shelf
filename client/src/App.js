@@ -11,7 +11,7 @@ import Shipping from './pages/Shipping';
 import LoginRequired from './components/LoginRequired';
 import Admin from './components/Admin';
 import PageNotFound from './components/PageNotFound';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 function App() {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axiosPrivate from '../utils/axiosPrivate';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#0088FE', '#00C49F'];
 
-export default function SalesStatus() {
+export default function Mono() {
   const [data, setData] = useState([]);
   const load = async () => {
     try {
@@ -29,32 +29,24 @@ export default function SalesStatus() {
   return (
     <>
       <Container>
-        <h5 style={{ marginBottom: "20px" }}> Sales</h5>
+        <h5 style={{ marginBottom: "20px" }}>Sales Range</h5>
         <div style={{ width: '100%', height: 300 }}>
           <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
+            <AreaChart
               data={data}
               margin={{
-                top: 5,
+                top: 10,
                 right: 30,
-                left: 20,
-                bottom: 5,
+                left: 0,
+                bottom: 0,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis dataKey="order" />
+              <YAxis />
               <Tooltip />
-              <Legend />
-              <Bar dataKey="order" fill="#00C49F" >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % 20]} />
-                ))}
-              </Bar>
-            </BarChart>
-
+              <Area type="monotone" dataKey="amount" stroke="#8884d8" fill="#8884d8" />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </Container>
